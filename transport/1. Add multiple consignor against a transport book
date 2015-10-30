@@ -1,0 +1,28 @@
+1. Add multiple consignor against a transport booking, 
+2. Add multiple stops against a transport booking.
+3. Create google map points based on selected stops.
+4. Add payment and deposit against a transport booking reference.
+5. Generate following from a transport booking
+
+		- delivery note 
+		- Invoice against the 'bill to' party.
+			Invoice should contain, line item details, payments and deposits and must be integrated with general ledger
+
+6. Generate delivery note button should be visible in transport booking when load status is 'delivered'.
+7. Load status will be following
+
+	Planning:
+
+	In transit:
+
+	Delivered:
+
+	Accounting:
+
+8. Load status table:
+	Should contain all the transport bookings. Must have an editable button , and should display status of load based on selected load status as point 7.
+
+9. In load status table, it should display total expenses, deposits, and Bilty Amount
+
+
+10. At bottom of table, it should display, total bilty amount, expense and deposit for all the loads

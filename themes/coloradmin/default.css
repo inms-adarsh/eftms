@@ -1,0 +1,707 @@
+/*--------------------------------------------------\
+| default       |               | default.css       |
+|---------------------------------------------------|
+| For use with:                                     |
+| FrontAccounting 									|
+| http://FrontAccounting.com/  	            		|
+| by Joe Hunt Consulting                            |
+|---------------------------------------------------|
+| Developer:                                        |
+| Joe Hunt                                          |
+|                                                   |
+|---------------------------------------------------|
+| Note:                                             |
+| Changes can be made to this CSS that will be      |
+| reflected throughout FrontAccounting.             |
+|                                                   |
+\--------------------------------------------------*/
+
+
+
+input.big {
+	width: 100px;
+}
+
+input.small {
+	width: 50px;
+}
+
+
+.inactive {
+	color: gray;
+}
+
+button {
+	
+	padding: 1px 0px;
+}
+
+
+.callout_main {
+
+	border: none;
+	width: 99%;
+	margin: 0;
+	padding: 0;
+}
+
+.main_page {
+	background-color: #f9f9f9;
+	border: none;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.quick_menu {
+	background-color: #285b86;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	/*text-align: right;*/
+}
+
+.quick_menu_selected {
+	
+	font-size: 13px;
+	border: none;
+	white-space: nowrap;
+	margin: 2px;
+	padding: 2px;
+	color: #00cc00;
+	font-weight: bolder;
+}
+
+.logoutBar {
+	padding-right: 1em;
+	background: #dee7ec;
+	color: black;
+	border-bottom: 1px solid #8cacbb;
+	width: 100%;
+}
+
+.bottomBar {
+	
+	background: #EFEFEF;
+	color: black;
+	border-bottom: 1px solid #8cacbb;
+	width: 100%;
+}
+
+
+.bottomBar2 {
+	
+	background: #EFEFEF;
+	color: black;
+	border-top: 1px solid #8cacbb;
+	border-bottom: 1px solid #8cacbb;
+	width: 100%;
+}
+
+.logoutBarRight {
+	text-align: right;
+}
+
+div.logoutBar {
+	padding-right: 1em;
+	background: #dee7ec;
+	color: black;
+	border-bottom: 1px solid #8cacbb;
+	text-align: right;
+}
+div.logoutBar a {
+	font-weight: normal;
+	margin-left: 1em;
+	color: #436976;
+	background-color: transparent;
+}
+div.logoutBar img {
+	vertical-align: top;
+}
+
+div.tabs {
+	padding: 3px 0 0 0;
+	background: none transparent scroll repeat 0% 0%;
+	white-space: nowrap;
+	border-collapse: collapse;
+	border-bottom: 1px solid #8cacbb;
+
+}
+div.tabs a {
+	border: 1px solid #8cacbb;
+	padding: 3px 10px;
+	font-weight: normal;
+	background: white scroll repeat 0% 0%;
+	color: #436976;
+	margin-right: 0;
+	height: 10px;
+}
+div.tabs a.selected {
+	border-top: 1px solid #8cacbb;
+	border-right: 1px solid #8cacbb;
+	border-bottom:  1px solid #dee7ec;
+	border-left: 1px solid #8cacbb;
+	font-weight: normal;
+	background: #dee7ec;
+	color: #436976;
+}
+div.tabs a:hover {
+	background: #dee7ec;
+	color: #436976;
+}
+
+.menu_group {
+	font-size: 13px;
+	padding: 0px;
+	color: #000000;
+	background-color: #dee7ec;
+	padding-left: 3px;
+	
+}
+
+.menu_group_items {
+	background-color: #f9f9f9;
+	font-weight: normal;
+	padding: 9px;
+	border: 1px solid #8cacbb;
+}
+
+#hotkeyshelp {
+	text-align: right;
+	
+}
+
+#footer {
+	position: relative;
+	bottom: -3px;
+}
+
+.footer td a {
+	color: #666666;
+	font-size: 9px;
+	border : none;
+}
+
+.footer {
+	
+	color: #cccccc;
+	font-weight: normal;
+	text-align: center;
+	width: 100%;
+}
+
+
+.titletext {
+	
+	border-bottom: 1px solid #8cacbb;
+	padding: 5px;
+	width: 100%;
+}
+
+h3,h4
+{
+font-weight:bold;
+}
+h4
+{
+font-size:18px;
+}
+
+.errortext {
+	font-size: 13px;
+	color: #ff0000;
+	
+}
+
+.overduebg {
+	background-color: #dd7777;
+}
+
+.overduefg {
+	color: #dd7777;
+}
+
+.currentfg {
+	color: #ff6666;
+}
+
+.redfg, a.redfg {
+	color: red;
+	
+}
+
+.settledbg {
+	background-color: #00bb00;
+}
+
+.settledfg {
+	color: #00bb00;
+}
+
+.inquirybg {
+	background-color: #fdfeef;
+}
+
+.currencybg {
+	background-color: #ee8888;
+}
+
+.stockmankobg {
+	background-color: pink;
+}
+
+.stockmankofg {
+	color: red;
+}
+
+.tablestyle_noborder {
+	padding: 3px;
+
+}
+.tablestyle_noborder td,.tablestyle_noborder tr,.tablestyle_noborder th{
+	border:none;
+}
+.table{
+	margin-bottom:0px;
+}
+td.label {
+	color : #444;
+	display: table-cell;
+	vertical-align : middle;
+	font-size : 11.5px;
+	font-weight : bold;
+	text-align: right;
+
+}
+input[type="text"],select,textarea ,input[type="password"]{
+  
+  height: 34px;
+  padding: 6px 8px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+textarea{
+height:120px;
+}
+.tableheader,.tableheader2
+{
+font-weight :bold;
+background : #f9f9f9;
+border-bottom:1px solid #c7c7c7;
+}
+
+.login {
+	width: 350px;
+	
+	border-collapse: collapse;
+	
+}
+.login td {
+	border-collapse: collapse;
+	border: 1px solid #cccccc;
+}
+
+.amount {
+	
+	
+	text-align: right;
+}
+
+.editbutton {
+   color:#0000FF;
+   background-color:transparent;
+   border-style:none;
+   text-decoration:underline;
+   cursor: pointer;
+}
+
+.navibutton[disabled], .navibutton[disabled] span {
+  color:#808080;
+  text-decoration: none;
+  cursor: auto;
+}
+
+button.navibutton {
+	
+	
+   color:#000;
+   /*padding: 0 3px;*/
+   background-color:transparent;
+   border-style:none;
+   cursor: pointer;
+}
+
+.navibutton span {
+/*	text-decoration: underline;*/
+}	
+
+.navibar {
+    padding: 3px 6px;
+	color: #000;
+    border-collapse: collapse;
+    background-color: #dee7ec;
+}
+
+.navibar tr td {
+    border: none;
+}
+.tablesectiontitle
+{
+font-weight:bold;
+font-size:14px;
+background: #f7f7f7;
+}
+.listsubmit {
+    display: none;
+}
+
+ul.ajaxtabs{
+	padding: 3px 0 0 0;
+	margin: 3px 3px -1px 3px;
+	
+	
+}
+
+ul.ajaxtabs li{
+	list-style: none;
+	margin: 0;
+	display: inline;
+}
+
+ul.ajaxtabs li button{
+  background-color:transparent;
+ cursor: pointer;
+	padding: 6px 10px;
+	border : none;
+
+	color:#444;
+
+}
+
+ul.ajaxtabs li button:hover{
+ background-color: #e6e6e6;
+ cursor: pointer;
+ 
+	border : none;
+	color:#444;
+}
+div.spaceBox{
+	
+	
+	border-left: 1px solid #8cacbb;
+	border-right:1px solid #8cacbb;
+	margin: 0 3px 0px 3px
+}
+
+div.contentBox{
+	border: 1px solid #ddd;
+	background: #fff;
+	margin: 0 3px 3px 3px;
+	padding: 5px;
+}
+
+ul.ajaxtabs li button.current, ul.ajaxtabs li button.current:hover{
+	border: 1px solid #ddd;
+	border-bottom : none;
+	background-color: #fff;
+	color:#444;
+}
+#hints {
+	font-size: 13px;
+	padding: 5px;
+	border-bottom: 1px solid #8cacbb;
+	margin: -4px -2px -2px;
+	border: 1px solid #8cacbb;
+	background-color: #FFFFE0;
+	white-space: nowrap;
+}
+/*
+	Calendar style
+*/
+#CCIframe {
+	display: none;
+	left: 0px;
+	position: absolute;
+	top: 0px;
+	height: 250px;
+	width: 270px;
+	z-index: 99;
+}
+#CC { 
+	position:absolute;
+	background-color:#FFF;
+	margin:0; padding:0;
+	display:none;
+	z-index: 100;
+}
+#CC table { 
+	
+	font-size: 8pt;
+	border-left: 1px solid #336;
+	border-right: 1px solid #336;
+}
+#CC th {
+	font-weight: normal;
+	text-align: center;
+}
+#CC th a {
+	font-weight: normal;
+	text-decoration: none;
+	color: #FFF;
+	padding: 1px;
+}
+#CC td {
+	text-align: center;
+}
+#CC .header {
+	background-color: #285b86;
+}
+#CC .weekday {
+	background-color: #EFEFEF;
+	color: #000;
+}
+#CC .weekend {
+	background-color: #FFC;
+	color: #000;
+}
+#CC .weekno {
+	background-color: #c0daf8;
+	color: #555;
+}
+#CC .current {
+	border: 1px solid #339;
+	background-color: #285b86;
+	color: #FFF;
+}
+#CC .weekday, #CC .weekend, #CC .current {
+	display: block;
+	text-decoration: none;
+	border: 1px solid #FFF;
+	width: 2em;
+}
+#CC .weekday:hover, #CC .weekend:hover, #CC .current:hover {
+	color: #FFF;
+	background-color: #285b86;
+	border: 1px solid #999;
+}
+#CC .previous {
+	text-align: left;
+}
+#CC .next {
+	text-align: right;
+}
+#CC .previous, #CC .next {
+	padding: 1px 3px 1px 3px;
+	font-size: 1.4em;
+}
+#CC .previous a, #CC .next a {
+	color: #FFF;
+	text-decoration: none;
+	
+}
+#CC .title {
+	text-align: center;
+	 
+	color: #FFF;
+}
+#CC .empty {
+	background-color: #ddd;
+	border: 1px solid #FFF;
+}
+
+div.err_msg {
+	margin: 40px;
+	padding: 3px;
+	border: 1px solid #cc3300;
+	background-color: #ffcccc;
+	color: #dd2200;
+	text-align: center;
+}
+
+div.warn_msg {
+	margin: 40px;
+	padding: 3px;
+	border: 1px solid #ff9900;
+	background-color: #ffff00;
+	color: #ff5500;
+	text-align: center;
+}
+
+div.note_msg {
+	margin: 40px; 
+	padding: 3px;
+	border: 1px solid #33cc00;
+	background-color: #ccffcc;
+	color: #007700;
+	text-align: center;
+}
+
+#title {
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+
+.column{
+    width:49%;
+    margin-right:.5%;
+    min-height:300px;
+    
+    float:left;
+}
+.column .dragbox{
+    margin:5px 20px 2px  20px;
+    background:#fff;
+    position:relative;
+    border:1px solid #ddd;
+}
+.column .dragbox h2{
+    margin:0;
+    font-size:14px;
+    padding:5px;
+    background:#EFEFEF;
+    color:#444;
+    border-bottom:1px solid #EFEFEF;
+   
+    cursor:move;
+}
+.dragbox-content{
+    background:#fff;
+    min-height:100px; margin:5px;
+    
+}
+.column  .placeholder{
+    background: #f0f0f0;
+    border:1px dashed #ddd;
+}
+
+.dragbox h2.collapse{
+    background:#f0f0f0 url('images/collapse.png') no-repeat top right;
+}
+.dragbox h2 .configure{
+   font-weight:normal;
+    margin-right:30px; float:right;
+}
+.collapse
+{
+display:block;
+}
+.success{
+    background:#d9f9e0;
+    border:1px solid #339933;
+    padding:5px;
+    font-weight:bold;
+}
+
+.dataform h2{
+	margin-top:0;
+    margin-bottom:10px;
+    background:#e4ecec;
+    border-bottom:1px solid #EFEFEF;
+    
+    
+    color: #455372;
+    border-bottom: 1px solid #cccccc;
+    padding: 5px;
+}
+
+	
+.reminder {
+    color:default;
+}
+.reminder_overdue {
+	color:red;
+}
+.reminder_due {
+	color:blue;
+}
+#main-menu {
+		position:relative;
+		z-index:9999;
+		width:auto;
+}
+#main-menu ul {
+		width:12em; /* fixed width only please - you can use the "subMenusMinWidth"/"subMenusMaxWidth" script options to override this if you like */
+}
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+.tablestyle
+{
+border-top:1px solid rgb(238,238,238);
+}
+table { 
+ 
+  border-collapse: collapse; 
+}
+/* Zebra striping */
+
+th,td
+{
+ 
+  padding: 6px 12px; 
+}
+.nav {
+padding-left:5px;
+}
+.footer
+{
+border-top :2px solid #EFEFEF ;
+
+}
+.navbar {
+	
+	min-height:30px;
+}
+.navbar-nav>li>a
+{
+	padding : 5px 10px;
+}
+table th 
+{
+/*background : #EFEFEF;*/
+}
+#_page_body
+{
+	background:#FFF;
+}
+
+.combo,.combo2,.combo3{
+	min-width:400px;
+	height:34px;
+	padding:6px 12px;
+	font-size:14px;
+	line-height:1.42857143;
+	color:#555;
+	background-color:#fff;
+	background-image:none;
+	border:1px solid #ccc;
+	border-radius:4px;
+	-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow:inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition:border-color ease-in-out .15s,
+	-webkit-box-shadow ease-in-out .15s;
+	-o-transition:border-color ease-in-out .15s,
+	box-shadow ease-in-out .15s;
+	transition:border-color ease-in-out .15s,
+	box-shadow ease-in-out .15s
+}
+	.combo,.combo2,.combo3:focus
+	{
+		border-color:#66afe9;outline:0;
+		-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+		box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+	}
+	.combo,.combo2,.combo3::-moz-placeholder{color:#999;opacity:1}.combo,.combo2,.combo3:-ms-input-placeholder{color:#999}.combo,.combo2,.combo3::-webkit-input-placeholder{color:#999}.combo[disabled],.combo2[disabled],.combo3[disabled],.combo[disabled],.combo2[disabled],.combo3[readonly]{background-color:#eee;opacity:1}.combo[disabled],.combo2[disabled],.combo3[disabled]{cursor:not-allowed}
+
+.table .combo, .table .combo3, .table .combo2 {
+	min-width: 100px;
+	width: 90%;
+}

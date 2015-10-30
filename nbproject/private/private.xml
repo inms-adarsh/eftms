@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/xampp/htdocs/eftms/includes/session.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/includes/ui/consignors_view.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/transport/includes/db/transport_order_db.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/index.php</file>
+            <file>file:/C:/xampp/htdocs/eftms/transport/includes/cart_class.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/inventory/includes/db/items_db.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/includes/ui/ui_view.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/includes/ui/ui_input.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/includes/ui/simple_crud_class.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/themes/fa-boot/default.css</file>
+            <file>file:/C:/xampp/htdocs/eftms/transport/includes/ui/transport_order_ui.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/includes/ui/ui_lists.inc</file>
+            <file>file:/C:/xampp/htdocs/eftms/transport/transport_order_entry.php</file>
+            <file>file:/C:/xampp/htdocs/eftms/includes/current_user.inc</file>
+        </group>
+    </open-files>
+</project-private>
