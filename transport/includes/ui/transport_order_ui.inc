@@ -1197,14 +1197,14 @@ function display_edit_stop_details(&$order, $line_no=-1)
              //   text_cells(null,'stop_city', null, 35, 50);
                 
                  echo "<td>";
-                date_cells(null, 'stop_date', $var_date, 25,100);
+                date_cells(null, 'stop_date', $var_date, 25,25);
                 echo "</td>";
                 hidden('stop_time',$var_time);
                 echo "<td>";
-                number_list_cells(null, 'hour', $var_hour, 0, 23, false,true);
+                number_list_cells(null, 'hour', $var_hour, 0, 10, false,true);
                 echo "</td>";
                 echo "<td>";
-                number_list_cells(null, 'min', $var_min, 0, 55, false,true);
+                number_list_cells(null, 'min', $var_min, 0, 10, false,true);
                 echo "</td>";
                 label_cell($var_time);
 	    $Ajax->activate('stops_table');
@@ -1234,16 +1234,16 @@ function display_edit_stop_details(&$order, $line_no=-1)
     	date_cells(null, 'stop_date', null);
         echo "</td>";
         echo "<td>";
-        number_list_cells(null, 'hour', null, 0, 23, false,true);
+        number_list_cells(null, 'hour', null, 0, 10, false,true);
         echo "</td>";
         if (list_updated('hour') )
                 $Ajax->activate('stop_time');
         echo "<td>";
-        number_list_cells(null, 'min', null, 0, 55, false,true);
+        number_list_cells(null, 'min', null, 0, 10, false,true);
         echo "</td>";
         if (list_updated('min') )
                 $Ajax->activate('stop_time');
-        text_cells(null,'stop_time',$_POST['hour'].":".$_POST['min'],5,"",false,"","","readonly"); 
+        text_cells(null,'stop_time',$_POST['hour'].":".$_POST['min'],25,"",false,"","","readonly"); 
         //text_cells(null,'stop_time',$_POST['hour'].":".$_POST['min'],5,"",false,"",""); 
         
         
@@ -1270,8 +1270,182 @@ function display_edit_stop_details(&$order, $line_no=-1)
 	end_row();
 }
 
+// Displaying delivery stop details
+function display_stop_delivery_details($title, &$order, $editable_items=false)
+{
+	global $path_to_root;
+	
+	div_start('stops_delivery_table');
+	
+	form_section_title($title);
+
+	start_display_table('table','id');
+	$th = array(_("Select Location"),_("Contact"), _("Address"),_("Date"),_("hours"),_("minutes"),_("time"), '');
+	if ( count($order->loadstop_delivery_line_items)) $th[] = '';
+	display_table_header($th);
+	
+	$k = 0;  //row colour counter
+
+	$id = find_submit('EditLoadstopDelivery');
+	foreach ($order->loadstop_delivery_line_items as $line_no=>$stock_item)
+	{
+//print_r($stock_item);
+		if ($id != $line_no)
+		{
+    		alt_table_row_color($k);
+
+                
+			label_cell($stock_item->location_name);
+                        label_cell($stock_item->delivery_contact);
+                        label_cell($stock_item->delivery_address);
+                       // label_cell($stock_item->city);
+                        label_cell($stock_item->delivery_date);
+                        
+                        $var_time = $stock_item->delivery_time;
+                        
+                        $var_min_pos = strpos($var_time, ":");
+                        
+                        $var_hour = substr($var_time,0,$var_min_pos);
+                        $var_min = substr($var_time,$var_min_pos+1,strlen($var_time));
+                        label_cell($var_hour);
+                        label_cell($var_min);
+                        label_cell($var_hour.":".$var_min);
+                        
+			edit_button_cell("EditLoadstopDelivery$line_no", _("Edit"),
+				_('Edit document line'));
+			delete_button_cell("DeleteStopDelivery$line_no", _("Delete"),
+				_('Remove line from document'));
+    		end_row();
+		}
+		else
+		{
+			display_edit_stop_delivery_details($order, $line_no);
+		}
+	}
+
+	if ($id == -1)
+		display_edit_stop_delivery_details($order);
+
+    end_display_table();
+    
+	div_end();
+}
+
+//---------------------------------------------------------------------------------
+
+function display_edit_stop_delivery_details(&$order, $line_no=-1)
+{
+	global $Ajax;
+	start_row();
+
+	$id = find_submit('EditLoadstopDelivery');
+	if ($line_no != -1 && $line_no == $id)  // edit old line
+	{
+            //print_r($order->loadstop_line_items[$id]);
+              $_POST['delivery_loc_code'] = $order->loadstop_delivery_line_items[$id]->delivery_loc_code;
+              $var_location_info = get_location_info($_POST['delivery_loc_code']);
+            
+              $var_address = $order->loadstop_delivery_line_items[$id]->delivery_address;
+              $var_location_name =$order->loadstop_delivery_line_items[$id]->delivery_location_name;
+              $var_contact =$order->loadstop_delivery_line_items[$id]->delivery_contact;
+              $var_date =$order->loadstop_delivery_line_items[$id]->delivery_date;
+              $var_time =$order->loadstop_delivery_line_items[$id]->delivery_time;
+              
+              $var_min_pos = strpos($var_time, ":");
+              $var_hour = substr($var_time,0,$var_min_pos);
+              $var_min = substr($var_time,$var_min_pos+1,strlen($var_time));
+              
+		hidden('delivery_loc_code', $_POST['delivery_loc_code']);
+		
+		label_cell($var_location_name);
+                text_cells("",'stop_delivery_contact',$var_contact);
+                text_cells(null,'stop_delivery_address', $var_address);
+             //   text_cells(null,'stop_city', null, 35, 50);
+                
+                 echo "<td>";
+                date_cells(null, 'stop_delivery_date', $var_date, 25,25);
+                echo "</td>";
+                hidden('stop_delivery_time',$var_time);
+                echo "<td>";
+                number_list_cells(null, 'delivery_hour', $var_hour, 0, 10, false,true);
+                echo "</td>";
+                echo "<td>";
+                number_list_cells(null, 'delivery_min', $var_min, 0, 10, false,true);
+                echo "</td>";
+                label_cell($var_time);
+	    $Ajax->activate('stops_delivery_table');
+	}
+	else
+	{
+            //Prepare new line
+            
+            
+                echo "<td>";
+    	delivery_locations_list_cells(null, 'delivery_loc_code', null, true,true,true,true);
+        echo "</td>";
+          if (list_updated('delivery_loc_code'))
+               {    
+                    $Ajax->activate('stop_delivery_address');
+                    $Ajax->activate('stop_delivery_contact');
+                  //  $Ajax->activate('stop_city');
+                     $var_location_info = get_location_info($_POST['delivery_loc_code']);
+       				 $var_location_address = $var_location_info['delivery_address'];
+       				 $var_location_contact = $var_location_info['contact'];
+       
+                }
+
+        
+    	text_cells(null,'stop_delivery_contact', $var_location_contact, 11, 50);
+    
+        text_cells(null,'stop_delivery_address', $var_location_address, 11, 50);
+//  	text_cells(null,'stop_city', null, 35, 50);
+    	echo "<td>";
+    	date_cells(null, 'stop_delivery_date', null);
+        echo "</td>";
+        echo "<td>";
+        number_list_cells(null, 'delivery_hour', null, 0, 10, false,true);
+        echo "</td>";
+        if (list_updated('delivery_hour') )
+                $Ajax->activate('stop_delivery_time');
+        echo "<td>";
+        number_list_cells(null, 'delivery_min', null, 0, 10, false,true);
+        echo "</td>";
+        if (list_updated('delivery_min') )
+                $Ajax->activate('stop_delivery_time');
+        text_cells(null,'stop_delivery_time',$_POST['delivery_hour'].":".$_POST['delivery_min'],25,"",false,"","","readonly"); 
+        //text_cells(null,'stop_time',$_POST['hour'].":".$_POST['min'],5,"",false,"",""); 
+        
+        
+    }
+
+
+	if ($id != -1)
+	{
+		button_cell('UpdateStopDelivery', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelStopChangesDelivery', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
+		hidden('Loadstop_delivery_LineNo', $line_no);
+                
+		set_focus('stop_delivery_contact');
+
+	}
+	else
+	{
+		submit_cells('AddStopDelivery', _("Add"), "colspan=2",
+		    _('Add new stop to load'), true);
+	}
+
+	end_row();
+}
+
 
 // ------------------------------------------------------------------------------
+
+
+
+// ------------------------------------------------------------------------------
+
 
 function display_order_header(&$order, $editable, $date_text)
 {

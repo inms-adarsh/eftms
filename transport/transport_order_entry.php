@@ -417,6 +417,11 @@ function stop_start_focus() {
 	$Ajax -> activate('stops_table');
 }
 
+function stop_delivery_start_focus() {
+	global $Ajax;
+
+	$Ajax -> activate('stops_delivery_table');
+}
 //-----------Prabha added to focus on consignor---------------------------------
 function consignor_line_start_focus() {
 	global $Ajax;
@@ -728,7 +733,15 @@ function handle_update_stop() {
 	page_modified();
 	stop_start_focus();
 }
+function handle_update_stop_delivery() {
 
+	if ($_POST['UpdateStopDelivery'] != '') {
+		$_SESSION['Items'] -> update_load_stop_delivery($_POST['Loadstop_delivery_LineNo'], get_post('delivery_loc_code'), 1, get_post('stop_delivery_contact'), get_post('stop_delivery_address'), get_post('stop_delivery_city'), get_post('stop_delivery_date'), get_post('stop_delivery_time'));
+
+	}
+	page_modified();
+	stop_delivery_start_focus();
+}
 //--------------------------------------------------------------------------------------
 //Prabha added to handle upation of payment and deposit----------------------------
 
@@ -813,6 +826,13 @@ function handle_delete_stop($line_no) {
 	$_SESSION['Items'] -> remove_load_stop($line_no);
 
 	stop_start_focus();
+}
+//----------- Prabha added to handle delete edit stops delivery------------------------------
+function handle_delete_stop_delivery($line_no) {
+
+	$_SESSION['Items'] -> remove_load_stop_delivery($line_no);
+
+	stop_delivery_start_focus();
 }
 
 //----------------------------------------------------------------------
@@ -923,6 +943,30 @@ function can_add_stop() {
 	}
 	return true;
 }
+
+function handle_new_stop_delivery() {
+
+    if (!can_add_stop_delivery()) {
+		return;
+	}
+        
+	$_SESSION['Items'] -> add_load_stop_delivery(count($_SESSION['Items'] -> loadstop_delivery_line_items), get_post('delivery_loc_code'), 1, get_post('stop_delivery_contact'), get_post('stop_delivery_address'), get_post('stop_delivery_city'), get_post('stop_delivery_date'), get_post('stop_delivery_time'));
+
+	page_modified();
+	stop_delivery_start_focus();
+}
+
+function can_add_stop_delivery() {
+
+	if (!get_post('delivery_loc_code')) {
+		display_error(_("There is no delivery Location selected."));
+                set_focus('delivery_loc_code');
+		return false;
+	}
+        
+	return true;
+}
+
 
 //--------------------------------------------------------------------------------
 
@@ -1093,6 +1137,23 @@ if (isset($_POST['CancelStopChanges'])) {
 }
 //--------------------------------------------------------------------------------
 
+// for delivery functionality in editstops tab
+
+$id_stop_delivery = find_submit('DeleteStopDelivery');
+if ($id_stop_delivery != -1)
+	handle_delete_stop_delivery($id_stop_delivery);
+
+if (isset($_POST['UpdateStopDelivery']))
+	handle_update_stop_delivery();
+
+if (isset($_POST['AddStopDelivery']))
+	handle_new_stop_delivery();
+
+if (isset($_POST['CancelStopDeliveryChanges'])) {
+	stop_delivery_start_focus();
+}
+//--------------------------------------------------------------------------------
+
 if ($_SESSION['Items'] -> trans_type != ST_TRANSPORTQUOTE && $_SESSION['Items'] -> trans_type != ST_TRANSPORTBOOKING) {
 	check_db_has_transportable_items(_("There are no transportable items defined in the system."));
 
@@ -1159,34 +1220,46 @@ if ($consignor_error == "") {
 	display_error($consignor_error);
 }
 static_tabs('tabs', array('basics' => array(_('&Load Basics'), $selected_id), 'bill' => array(_('&Customer'), $selected_id), 'consignor' => array(_('&Consignor Info'), $selected_id), 'consignee' => array(_('&Consignee Info'), $selected_id), 'stops' => array(_('&Edit Stops'), $selected_id), 'carrier_info' => array(_('&Carrier Info'), $selected_id), 'freight' => array(_('&Freight Calculation'), $selected_id), 'pe' => array(_('&Income & Expenses'), $selected_id)));
+
 start_form_section('tab-content');
+
 start_form_section('tab-pane fade active in', 'basics');
 $consignor_error = display_order_header($_SESSION['Items'], ($_SESSION['Items'] -> any_already_delivered() == 0), $idate);
 display_load_basics($_SESSION['Items'], ($_SESSION['Items'] -> any_already_delivered() == 0), $idate);
 end_form_section();
+
 start_form_section('tab-pane fade in', 'bill');
 display_billing_info($_SESSION['Items'], ($_SESSION['Items'] -> any_already_delivered() == 0), $idate);
 end_form_section();
+
 start_form_section('tab-pane fade in', 'consignor');
 display_consignor('Consignor Details', $_SESSION['Items'], true);
 end_form_section();
+
 start_form_section('tab-pane fade in', 'consignee');
 display_consignee_info($_SESSION['Items'], ($_SESSION['Items'] -> any_already_delivered() == 0), $idate);
 end_form_section();
+
 start_form_section('tab-pane fade in', 'stops');
-display_stop_details('Stop Details', $_SESSION['Items'], true);
+display_stop_details('Pickup Details', $_SESSION['Items'], true);
+display_stop_delivery_details('Delivery Details', $_SESSION['Items'], true);
 end_form_section();
+
 start_form_section('tab-pane fade in', 'carrier_info');
 display_carrier_info($_SESSION['Items']);
 end_form_section();
+
 start_form_section('tab-pane fade in', 'freight');
 display_order_summary($orderitems, $_SESSION['Items'], true);
 end_form_section();
+
 start_form_section('tab-pane fade in', 'pe');
 display_deposit_details('Income Details', $_SESSION['Items'], true);
 display_payment_details('Expense Details', $_SESSION['Items'], true);
 end_form_section();
+
 end_form_section();
+
 start_form_section('text-center', 'controls');
 if ($_SESSION['Items'] -> trans_no == 0) {
 
@@ -1199,7 +1272,9 @@ if ($_SESSION['Items'] -> trans_no == 0) {
 }
 
 submit_center_last('CancelOrder', $cancelorder, _('Cancels document entry or removes transport booking when editing an old document'));
+
 end_form_section();
+
 end_form();
 end_page();
 ?>
