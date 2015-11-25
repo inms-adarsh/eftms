@@ -167,11 +167,12 @@ function add_transport_order(&$order)
 	} /* inserted line items into transport booking details */
         
         // Prabha added this code to insert into transport_consignor_details
+        
         foreach ($order->consignor_line_items as $line)
 	{
 		
 		$sql = "INSERT INTO ".TB_PREF."transport_consignor_details "
-                        . "(order_no, trans_type, consignor_no, tin_no, address,email,phone"
+                        . "(order_no, trans_type, consignor_no, tin_no, address,email,phone,"
                         . "created_by, created_date) VALUES (";
 		$sql .= $order_no . ",".$order->trans_type .",".
                                         $line->consignor_code.", ".
@@ -182,6 +183,7 @@ function add_transport_order(&$order)
                                           db_escape($line->phone). ",".
                                         db_escape($_SESSION['wa_current_user']->loginname).
                                     ", now())";
+                display_error("transport_order_db :lie185".$sql);
 		db_query($sql, "order consignor Details Cannot be Added");
 
 

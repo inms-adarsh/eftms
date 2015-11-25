@@ -11,6 +11,7 @@
 ***********************************************************************/
 include_once($path_to_root . "/transport/includes/cart_class.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
+//require_once($path_to_root . "/transport/GoogleMapAPI.class.php");
 
 //--------------------------------------------------------------------------------
 // Prabha added for adding payments-----------------------------------------------
@@ -903,7 +904,8 @@ function display_carrier_info(&$order)
 		form_section_title(_("Vehicle Details"));
 		vehicle_list_row(_("Vehicle:"), 'vehicle_id', $order->vehicle_id, true, true, false, true);
 		$order->vehicle_id=$_POST['vehicle_id'];
-		
+		print_r($order->loadstop_line_items);
+print_r($order->consignor_line_items);
 		driver_list_row(_("Driver:"), 'driver_id', null, true, true, false, true);
 		
 		if( ($order->driver_id != get_post('driver_id', -1)) ||
@@ -1009,6 +1011,8 @@ function display_consignee_info(&$order, $editable, $date_text)
 		$consignee_error = "";
 		
 		form_section_title(_("Consignee Details"));
+                print_r($order->loadstop_line_items);
+print_r($order->consignor_line_items);
 		consignor_list_row(_("Customer:"), 'consignee_id', null, true, true, false, true);
 		  if(list_updated('consignee_id')) 
 		{
@@ -1269,7 +1273,73 @@ function display_edit_stop_details(&$order, $line_no=-1)
 
 	end_row();
 }
+function display_stop_googlemap_details($title, &$order, $editable_items=false)
+{
+    
+global $path_to_root, $Ajax;
 
+div_start('routes_table');
+$Ajax->activate('routes_table');	
+	form_section_title($title);
+$var_loc_code ='';
+
+
+//print_r($_SESSION['Items']->loadstop_line_items);
+//print_r($_SESSION['Items']->consignor_line_items);
+//print_r($order->loadstop_line_items);
+//$stock_item->location_name
+//echo'prabha'.$order->loadstop_line_items[0]->location_name;
+
+
+foreach ($order->loadstop_line_items as $stock_item)
+        $var_loc_code = $stock_item->loc_code .",".$var_loc_code ;
+
+foreach ($order->loadstop_delivery_line_items as $stock_item)
+        $var_loc_code = $var_loc_code .$stock_item->delivery_loc_code.",";
+
+$var_loc_code = rtrim($var_loc_code,",");
+
+        
+$var_src_path = $path_to_root."/transport/includes/ui/phpsqlinfo_add.php?ord=".$var_loc_code."&ref=".$order->reference;
+    echo "<iframe style=\"width: 800px; height: 800px\" src=".$var_src_path."></iframe>";
+
+//display_error ($var_map_html);
+div_end();
+}
+function display_stop_route_details($title, &$order, $editable_items=false)
+{
+    global $path_to_root;
+    $map = new GoogleMapAPI('map');
+    // setup database for geocode caching
+
+   //$map->setDSN('mysql://root@localhost/eftms_16@GEOCODES');
+//    // enter YOUR Google Map Key
+   $map->setAPIKey('AIzaSyAowQwqi_I-OQHu89UCjJEfYLb7HPeKijI');
+   
+   $map->addMarkerByAddress("Jaipur","Marker Title", "Marker Description");
+    $map->addMarkerByCoords(77.5945627,12.9715987);
+   //display_error('hello');
+   echo "<head>";
+   
+      $map->printHeaderJS(); 
+     $map->printMapJS(); 
+     echo "<style type='text/css'>
+      v\:* {
+        behavior:url(#default#VML);
+      }
+    </style>
+    </head>
+     <body onload=\"onLoad()\">
+    <table border=1>
+    <tr><td>";
+     $map->printMap(); 
+     $map->printSidebar(); 
+     echo "</td></tr></table>";
+    
+  
+
+
+}
 // Displaying delivery stop details
 function display_stop_delivery_details($title, &$order, $editable_items=false)
 {
@@ -1280,7 +1350,7 @@ function display_stop_delivery_details($title, &$order, $editable_items=false)
 	form_section_title($title);
 
 	start_display_table('table','id');
-	$th = array(_("Select Location"),_("Contact"), _("Address"),_("Date"),_("hours"),_("minutes"),_("time"), '');
+	$th = array(_("lineno"),_("Select Location"),_("Contact"), _("Address"),_("Date"),_("hours"),_("minutes"),_("time"), '');
 	if ( count($order->loadstop_delivery_line_items)) $th[] = '';
 	display_table_header($th);
 	
@@ -1289,13 +1359,13 @@ function display_stop_delivery_details($title, &$order, $editable_items=false)
 	$id = find_submit('EditLoadstopDelivery');
 	foreach ($order->loadstop_delivery_line_items as $line_no=>$stock_item)
 	{
-//print_r($stock_item);
+
 		if ($id != $line_no)
 		{
     		alt_table_row_color($k);
 
-                
-			label_cell($stock_item->location_name);
+                label_cell($line_no);
+			label_cell($stock_item->delivery_location_name);
                         label_cell($stock_item->delivery_contact);
                         label_cell($stock_item->delivery_address);
                        // label_cell($stock_item->city);
@@ -1341,6 +1411,7 @@ function display_edit_stop_delivery_details(&$order, $line_no=-1)
 	$id = find_submit('EditLoadstopDelivery');
 	if ($line_no != -1 && $line_no == $id)  // edit old line
 	{
+            
             //print_r($order->loadstop_line_items[$id]);
               $_POST['delivery_loc_code'] = $order->loadstop_delivery_line_items[$id]->delivery_loc_code;
               $var_location_info = get_location_info($_POST['delivery_loc_code']);
@@ -1356,7 +1427,7 @@ function display_edit_stop_delivery_details(&$order, $line_no=-1)
               $var_min = substr($var_time,$var_min_pos+1,strlen($var_time));
               
 		hidden('delivery_loc_code', $_POST['delivery_loc_code']);
-		
+		label_cell($line_no);
 		label_cell($var_location_name);
                 text_cells("",'stop_delivery_contact',$var_contact);
                 text_cells(null,'stop_delivery_address', $var_address);
@@ -1379,7 +1450,7 @@ function display_edit_stop_delivery_details(&$order, $line_no=-1)
 	{
             //Prepare new line
             
-            
+            label_cell($line_no);
                 echo "<td>";
     	delivery_locations_list_cells(null, 'delivery_loc_code', null, true,true,true,true);
         echo "</td>";

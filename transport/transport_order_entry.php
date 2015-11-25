@@ -590,7 +590,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	copy_to_cart();
 	$modified = ($_SESSION['Items'] -> trans_no != 0);
 	$so_type = $_SESSION['Items'] -> so_type;
-
+        
 	$ret = $_SESSION['Items'] -> write(1);
 	if ($ret == -1) {
 		display_error(_("The entered reference is already in use."));
@@ -928,7 +928,7 @@ function handle_new_stop() {
 	if (!can_add_stop()) {
 		return;
 	}
-	$_SESSION['Items'] -> add_load_stop(count($_SESSION['Items'] -> loadstop_line_items), get_post('loc_code'), 1, get_post('stop_contact'), get_post('stop_address'), get_post('stop_city'), get_post('stop_date'), get_post('stop_time'));
+        $_SESSION['Items'] -> add_load_stop(count($_SESSION['Items'] -> loadstop_line_items), get_post('loc_code'), 1, get_post('stop_contact'), get_post('stop_address'), get_post('stop_city'), get_post('stop_date'), get_post('stop_time'));
 
 	page_modified();
 	stop_start_focus();
@@ -1219,7 +1219,7 @@ if ($consignor_error == "") {
 } else {
 	display_error($consignor_error);
 }
-static_tabs('tabs', array('basics' => array(_('&Load Basics'), $selected_id), 'bill' => array(_('&Customer'), $selected_id), 'consignor' => array(_('&Consignor Info'), $selected_id), 'consignee' => array(_('&Consignee Info'), $selected_id), 'stops' => array(_('&Edit Stops'), $selected_id), 'carrier_info' => array(_('&Carrier Info'), $selected_id), 'freight' => array(_('&Freight Calculation'), $selected_id), 'pe' => array(_('&Income & Expenses'), $selected_id)));
+static_tabs('tabs', array('basics' => array(_('&Load Basics'), $selected_id), 'bill' => array(_('&Customer'), $selected_id), 'consignor' => array(_('&Consignor Info'), $selected_id), 'consignee' => array(_('&Consignee Info'), $selected_id), 'stops' => array(_('&Edit Stops'), $selected_id),  'Routes' => array(_('&Routes'), $selected_id),'carrier_info' => array(_('&Carrier Info'), $selected_id), 'freight' => array(_('&Freight Calculation'), $selected_id), 'pe' => array(_('&Income & Expenses'), $selected_id)));
 
 start_form_section('tab-content');
 
@@ -1243,6 +1243,10 @@ end_form_section();
 start_form_section('tab-pane fade in', 'stops');
 display_stop_details('Pickup Details', $_SESSION['Items'], true);
 display_stop_delivery_details('Delivery Details', $_SESSION['Items'], true);
+end_form_section();
+
+start_form_section('tab-pane fade in', 'Routes');
+display_stop_googlemap_details('Route Details', $_SESSION['Items'], true);
 end_form_section();
 
 start_form_section('tab-pane fade in', 'carrier_info');
