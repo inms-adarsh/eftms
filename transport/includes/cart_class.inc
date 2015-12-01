@@ -128,6 +128,7 @@ class cart
         var $consignor_line_items;  //array of objects of class line_details 
         var $loadstop_line_items;  //array of objects of class line_details 
         var $loadstop_delivery_line_items;  //array of objects of class line_details 
+        var $loadstop_markers_line_items;  //array of objects of class line_details 
         var $gl_payment_items; // array of objects of class gl_items
         var $gl_deposit_items; // array of objects of class gl_items
 	//-------------------------------------------------------------------------
@@ -142,6 +143,7 @@ class cart
                 $this->consignor_line_items = array(); //prabha added on 1stJul2015
                 $this->loadstop_line_items = array(); //prabha added on 1stJul2015
                 $this->loadstop_delivery_line_items = array(); //prabha added on 4thNov2015
+                $this->loadstop_markers_line_items = array();
                 $this->gl_payment_items = array(); //prabha added for payments 
                 $this->gl_deposit_items = array(); //prabha added for deposits
 		$this->transport_type = "";
@@ -829,7 +831,17 @@ function update_consignor_cart_item($line_no, $consignor_no,$tin_no, $address,$p
         	$this->loadstop_delivery_line_items[$line_no] = $line;
 		return 1;
 	
-	}	
+	}
+        
+        // adding markers in an array
+                function add_load_markers($line_no,$id,$address, $lat,$lng,$marker_id,$order_ref)
+	{
+	
+		$line = new load_markers($id,$address, $lat,$lng,$marker_id,$order_ref);
+        	$this->loadstop_markers_line_items[$line_no] = $line;
+		return 1;
+	
+	}
 function update_load_stop($line_no, $loc_code,$stop_code, $contact=null, $address=null,$city=null,$date=null,$time=null)
 	{
     
@@ -987,6 +999,7 @@ class load_stop_delivery
 	var $delivery_stop_code;
 	var $delivery_date;
 	var $delivery_time;
+        
 
 	function load_stop_delivery ($delivery_loc_code,$stop_delivery_code, $delivery_contact=null, 
                 $delivery_address=null,$delivery_city=null,$delivery_date=null,$delivery_time=null,$delivery_id=0)
@@ -994,8 +1007,7 @@ class load_stop_delivery
             
                 $this->delivery_id = $delivery_id;
 		$this->delivery_loc_code = $delivery_loc_code;
-                
-                
+                               
                  $var_stop_row = get_location_info($delivery_loc_code);
 
 		if (!$var_stop_row) 
@@ -1042,6 +1054,29 @@ class load_stop
 			
 	}
 }
+// prabha added for markers
+class load_markers
+{
+        var $id ;
+	var $address;
+        var $lat;
+	var $lng;
+	var $marker_id;
+	var $order_ref;
+        
+
+	function load_markers ($id,$address, $lat,$lng,$marker_id,$order_ref) 
+	{
+            
+                $this->id = $id;
+		$this->address = $$address;
+                $this->lat = $lat;
+                $this->lng = $lng;
+		$this->marker_id = $marker_id;
+                $this->order_ref = $order_ref;
+	}
+}
+
 
 //prabha added on 1July 2015
 class consignor_line_details
