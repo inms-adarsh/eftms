@@ -1,11 +1,10 @@
 <?php
 require("phpsqlinfo_dbinfo.php");
 // Gets data from URL parameters
-$name = $_GET['name'];
+
 $address = $_GET['address'];
 $lat = $_GET['lat'];
 $lng = $_GET['lng'];
-$type = $_GET['type'];
 $marker_id = $_GET['marker_id'];
 $order_ref = $_GET['order_ref'];
 // Opens a connection to a MySQL server
@@ -19,18 +18,16 @@ if (!$db_selected) {
   die ('Can\'t use db : ' . mysql_error());
 }
 // Insert new row with user data
-$var_sql = " SELECT * from markers WHERE address = '".$address."' AND order_ref = ".$order_ref ;
+$var_sql = " SELECT * from 0_transport_order_markers WHERE address = '".$address."' AND order_ref = ".$order_ref ;
 $var_result = mysql_query($var_sql);
 $var_num_rows = mysql_num_rows($var_result);
 if ($var_num_rows <= 0){
-$query = sprintf(" INSERT INTO markers " .
-         " (id, name, address, lat, lng, type,marker_id,order_ref ) " .
-         " VALUES (NULL, '%s', '%s', '%s', '%s', '%s','%s','%s');",
-         mysql_real_escape_string($name),
+$query = sprintf(" INSERT INTO 0_transport_order_markers " .
+         " (id,  address, lat, lng, marker_id,order_ref ) " .
+         " VALUES (NULL,  '%s', '%s', '%s', '%s','%s');",
          mysql_real_escape_string($address),
          mysql_real_escape_string($lat),
          mysql_real_escape_string($lng),
-         mysql_real_escape_string($type),
          mysql_real_escape_string($marker_id),
          $order_ref);
 

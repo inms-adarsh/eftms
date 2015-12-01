@@ -228,12 +228,16 @@ function add_transport_order(&$order)
 
 
 	}
+        // Update markers into transport_order_stops for this order
+        $sql = " UPDATE ".TB_PREF."transport_order_markers 
+                 SET order_no = ".$order_no .",
+                     trans_type = ".$order->trans_type
+                . " WHERE order_ref = ".$order->reference;
+        db_query($sql, "order stops markers Cannot be Updated");
         // Prabha added this code to insert into transport_order_payments and deposits table
         foreach ($order->gl_payment_items as $line)
 	{
-		
-             
-                        
+                  
 		$sql = "INSERT INTO ".TB_PREF."trans_order_payments_deposits "
                         . "(order_no, trans_type, type,
                             entity_type,consignor_no,driver_code,
@@ -329,6 +333,10 @@ function delete_transport_order($order_no, $trans_type)
 		.db_escape($order_no) . " AND trans_type=".db_escape($trans_type);
 	db_query($sql, "order stops delete");
         
+        // delete transport_order_stops
+        $sql = "DELETE FROM ".TB_PREF."transport_order_markers WHERE order_no =" 
+		.db_escape($order_no) . " AND trans_type=".db_escape($trans_type);
+	db_query($sql, "order markers delete");
         
         // delete transport_order_payment_deposits
         $sql = "DELETE FROM ".TB_PREF."trans_order_payments_deposits WHERE order_no =" 
@@ -539,7 +547,7 @@ function update_transport_order($order)
                             now() )";
 		}
 
-		db_query($sql, "Old order Cannot be Inserted");
+		db_query($sql, "Old consignor details Cannot be Inserted");
             } /* inserted line items into transport booking details */
         // Prabha added this code to update transport_order_stops
         
@@ -551,14 +559,14 @@ function update_transport_order($order)
 	$id_list = implode(', ', $id_tokeep);
 	if (! empty($id_list))
         {
-            $sql = "DELETE FROM ".TB_PREF."transport_order_stops WHERE order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
+            $sql = "DELETE FROM ".TB_PREF."transport_order_stops WHERE pickup_delivery_type = 'P' AND order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
             $sql .= " AND id NOT IN ($id_list)";
         
             db_query($sql, "Old transport_order_stops Cannot be Deleted");
         }
 
          else {
-             $sql = "DELETE FROM ".TB_PREF."transport_order_stops WHERE order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
+             $sql = "DELETE FROM ".TB_PREF."transport_order_stops WHERE pickup_delivery_type = 'P' AND order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
                db_query($sql, "Old transport_order_stops Cannot be Deleted");
         }
             foreach ($order->loadstop_line_items as $line)
@@ -567,7 +575,6 @@ function update_transport_order($order)
 			$sql = "UPDATE ".TB_PREF."transport_order_stops 
 						SET loc_code = ".$line->loc_code . ", 
                                                     pickup_delivery_type = 'P',
-                                                    sequence = ".$line->sequence .",
                                                     contact = ".db_escape($line->contact) . ",
                                                     stop_code = 1  ,
 						    address = ".db_escape($line->address) . ",
@@ -579,12 +586,11 @@ function update_transport_order($order)
 		}
 		else {
 		$sql = "INSERT INTO ".TB_PREF."transport_order_stops
-		 (id, order_no, trans_type,pickup_delivery_type,sequence, loc_code,  contact,stop_code, address,stop_date,stop_time,
+		 (id, order_no, trans_type,pickup_delivery_type, loc_code,  contact,stop_code, address,stop_date,stop_time,
                  created_by,created_date)
 		 VALUES (";
 		$sql .= db_escape($line->id ? $line->id : 0) . ","
-		  .$order_no . ",".$order->trans_type.",'P',".
-                   $line->sequence .","     
+		  .$order_no . ",".$order->trans_type.",'P',"
 		  .$line->loc_code . ","
 		  .db_escape($line->contact) . ", "
                   .$line->loc_code . ","
@@ -595,7 +601,7 @@ function update_transport_order($order)
                    now() )";
 		}
 
-		db_query($sql, "Old order Cannot be Inserted");
+		db_query($sql, "Old order stops Cannot be Inserted");
 	}
         
         // Prabha added this code to update transport order stop details for delivery
@@ -606,53 +612,55 @@ function update_transport_order($order)
 	$id_list = implode(', ', $id_tokeep);
 	if (! empty($id_list))
         {
-            $sql = "DELETE FROM ".TB_PREF."transport_order_stops WHERE order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
+            $sql = "DELETE FROM ".TB_PREF."transport_order_stops WHERE pickup_delivery_type = 'D' AND order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
             $sql .= " AND id NOT IN ($id_list)";
         
             db_query($sql, "Old transport_order_stops Cannot be Deleted");
         }
 
          else {
-             $sql = "DELETE FROM ".TB_PREF."transport_order_stops WHERE order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
+             $sql = "DELETE FROM ".TB_PREF."transport_order_stops WHERE pickup_delivery_type = 'D' AND order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
                db_query($sql, "Old transport_order_stops Cannot be Deleted");
         }
             foreach ($order->loadstop_delivery_line_items as $line)
             {
 		if($line->id) {
 			$sql = "UPDATE ".TB_PREF."transport_order_stops 
-						SET loc_code = ".$line->loc_code . ", 
+						SET loc_code = ".$line->delivery_loc_code . ", 
                                                     pickup_delivery_type = 'D',
-                                                    sequence = ".$line->sequence .",
-                                                    contact = ".db_escape($line->contact) . ",
+                                                    contact = ".db_escape($line->delivery_contact) . ",
                                                     stop_code = 1  ,
-						    address = ".db_escape($line->address) . ",
-                                                    stop_date = ".db_escape(date2sql($line->date)) . ",
-                                                    stop_time = ".db_escape($line->time) . ",
+						    address = ".db_escape($line->delivery_address) . ",
+                                                    stop_date = ".db_escape(date2sql($line->delivery_date)) . ",
+                                                    stop_time = ".db_escape($line->delivery_time) . ",
 						    updated_by = ". db_escape($_SESSION['wa_current_user']->loginname). ", 
                                                     updated_date =     now()	
 						WHERE id = {$line->id}";
 		}
 		else {
 		$sql = "INSERT INTO ".TB_PREF."transport_order_stops
-		 (id, order_no, trans_type,pickup_delivery_type,sequence, loc_code,  contact,stop_code, address,stop_date,stop_time,
+		 (id, order_no, trans_type,pickup_delivery_type, loc_code,  contact,stop_code, address,stop_date,stop_time,
                  created_by,created_date)
 		 VALUES (";
 		$sql .= db_escape($line->id ? $line->id : 0) . ","
-		  .$order_no . ",".$order->trans_type.",'D',".
-                   $line->sequence .","     
-		  .$line->loc_code . ","
-		  .db_escape($line->contact) . ", "
-                  .$line->loc_code . ","
-		  .db_escape($line->address) . ", "
-                  .db_escape(date2sql($line->date)) . ", "      
-                  .db_escape($line->time) . ", "
+		  .$order_no . ",".$order->trans_type.",'D',"
+		  .$line->delivery_loc_code . ","
+		  .db_escape($line->delivery_contact) . ",1, "
+                  .db_escape($line->delivery_address) . ", "
+                  .db_escape(date2sql($line->delivery_date)) . ", "      
+                  .db_escape($line->delivery_time) . ", "
                   .db_escape($_SESSION['wa_current_user']->loginname).",
                    now() )";
 		}
-
-		db_query($sql, "Old order Cannot be Inserted");
+                
+		db_query($sql, "Old order delivery stops Cannot be Inserted");
 	}
-        
+                // Update markers into transport_order_stops for this order
+        $sql = " UPDATE ".TB_PREF."transport_order_markers 
+                 SET order_no = ".$order_no .",
+                     trans_type = ".$order->trans_type
+                . " WHERE order_ref = ".$order->reference;
+        db_query($sql, "order stops markers Cannot be Updated");
         
         
         // Prabha added this code to update transport order payment deposits details
@@ -868,14 +876,22 @@ function get_chart_name($code_id) {
 //--------------------------------------------------------------------------------------------------
 //----------------------Prabha added this function to get transport order stops from the table---------------
 function get_transport_order_stop_details($order_no, $trans_type) {
-	$sql = "SELECT id, loc_code, contact,address,stop_code,stop_date,stop_time
+	$sql = "SELECT id, loc_code, contact,address,stop_code,stop_date,stop_time,pickup_delivery_type
 			FROM ".TB_PREF."transport_order_stops
 	WHERE  order_no =" . db_escape($order_no) 
 		." AND trans_type = " . db_escape($trans_type) . " ORDER BY id";
 
 	return db_query($sql, "Retreive order stops Items");
 }
+//----------------------Prabha added this function to get transport order stops from the table---------------
+function get_transport_order_marker_details($order_no, $trans_type) {
+	$sql = "SELECT id, address,lat,lng,marker_id,order_ref
+			FROM ".TB_PREF."transport_order_markers
+	WHERE  order_no =" . db_escape($order_no) 
+		." AND trans_type = " . db_escape($trans_type) . " ORDER BY id";
 
+	return db_query($sql, "Retreive order stops markers");
+}
 //----------------------Prabha added this function to get get_transport_order_payment_deposit_details from the table---------------
 function get_transport_order_payment_deposit_details($order_no, $trans_type) {
 	$sql = "SELECT *
@@ -1000,12 +1016,30 @@ $result = get_transport_order_stop_details($order_no, $order->trans_type);
 		$line_no=0;
 		while ($myrow = db_fetch($result))
 		{
-			$order->add_load_stop($line_no,$myrow["loc_code"],$myrow["stop_code"],$myrow["contact"],
+                    if ($myrow["pickup_delivery_type"] == 'P'){
+                        $order->add_load_stop($line_no,$myrow["loc_code"],$myrow["stop_code"],$myrow["contact"],
 				$myrow["address"], "",$myrow["stop_date"],$myrow["stop_time"],$myrow["id"] );
+                    }
+                    else
+                    {
+                        $order->add_load_stop_delivery($line_no,$myrow["loc_code"],$myrow["stop_code"],$myrow["contact"],
+				$myrow["address"], "",$myrow["stop_date"],$myrow["stop_time"],$myrow["id"] );
+                    }
 		$line_no++;
 		}
 	}
-
+//----------- Prabha added to get transport order markers details from the database-------------------------------
+$result = get_transport_order_markers_details($order_no, $order->trans_type);
+	if (db_num_rows($result) > 0)
+	{
+		$line_no=0;
+		while ($myrow = db_fetch($result))
+		{
+			$order->add_load_markers($line_no,$myrow["id"],$myrow["address"],$myrow["lat"],
+				$myrow["lng"], $myrow["marker_id"],$myrow["order_ref"] );
+		$line_no++;
+		}
+	}
 //---------------------------------------------------------------------------------------        
 // Prabha added to get payment order details from the database
         
@@ -1142,11 +1176,32 @@ $result = get_transport_order_stop_details($order_no, $order->trans_type);
 		$line_no=0;
 		while ($myrow = db_fetch($result))
 		{
-			$order->add_load_stop($line_no,$myrow["loc_code"],$myrow["stop_code"],$myrow["contact"],
+                    if ($myrow["pickup_delivery_type"] == 'P'){
+                        $order->add_load_stop($line_no,$myrow["loc_code"],$myrow["stop_code"],$myrow["contact"],
+				$myrow["address"], $myrow["stop_date"],$myrow["stop_time"],$myrow["id"] );
+                    }
+                    else
+                    {
+                        $order->add_load_stop_delivery($line_no,$myrow["loc_code"],$myrow["stop_code"],$myrow["contact"],
 				$myrow["address"], "",$myrow["stop_date"],$myrow["stop_time"],$myrow["id"] );
+                    }
 		$line_no++;
 		}
 	}
+        //----------- Prabha added to get transport order markers details from the database-------------------------------
+$result = get_transport_order_markers_details($order_no, $order->trans_type);
+	if (db_num_rows($result) > 0)
+	{
+		$line_no=0;
+		while ($myrow = db_fetch($result))
+		{
+			$order->add_load_markers($line_no,$myrow["id"],$myrow["address"],$myrow["lat"],
+				$myrow["lng"], "",$myrow["marker_id"],$myrow["order_ref"] );
+		$line_no++;
+		}
+	}
+//---------------------------------------------------------------------------------------        
+
 $result = get_transport_order_payment_deposit_details($order_no, $order->trans_type);
 	if (db_num_rows($result) > 0)
 	{
@@ -1257,6 +1312,7 @@ $order->contact_phone=$myrow["contact_phone"];
 	$driver = get_vehicle_desc($myrow["vehicle_no"]);
 	$order->vehicle_number_plate=$driver["vehicle_number_plate"];
 	}
+        
 	$result = get_transport_order_details($order_no, $order->trans_type);
 	if (db_num_rows($result) > 0)
 	{
@@ -1292,11 +1348,34 @@ $result = get_transport_order_stop_details($order_no, $order->trans_type);
 		$line_no=0;
 		while ($myrow = db_fetch($result))
 		{
+                    if ($myrow["pickup_delivery_type"] == 'P'){
 			$order->add_load_stop($line_no,$myrow["loc_code"],$myrow["stop_code"],$myrow["contact"],
+				$myrow["address"], $myrow["stop_date"],$myrow["stop_time"],$myrow["id"] );
+                    }
+                    else
+                    {
+                        $order->add_load_stop_delivery($line_no,$myrow["loc_code"],$myrow["stop_code"],$myrow["contact"],
 				$myrow["address"], "",$myrow["stop_date"],$myrow["stop_time"],$myrow["id"] );
+                    }
 		$line_no++;
 		}
 	}
+        
+        //----------- Prabha added to get transport order markers details from the database-------------------------------
+$result = get_transport_order_marker_details($order_no, $order->trans_type);
+	if (db_num_rows($result) > 0)
+	{
+		$line_no=0;
+		while ($myrow = db_fetch($result))
+		{
+			$order->add_load_markers($line_no,$myrow["id"],$myrow["address"],$myrow["lat"],
+				$myrow["lng"], $myrow["marker_id"],$myrow["order_ref"] );
+		$line_no++;
+		}
+	}
+        
+//---------------------------------------------------------------------------------------        
+
      $result = get_transport_order_payment_deposit_details($order_no, $order->trans_type);
 	if (db_num_rows($result) > 0)
 	{

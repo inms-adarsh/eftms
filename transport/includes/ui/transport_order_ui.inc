@@ -905,7 +905,7 @@ function display_carrier_info(&$order)
 		vehicle_list_row(_("Vehicle:"), 'vehicle_id', $order->vehicle_id, true, true, false, true);
 		$order->vehicle_id=$_POST['vehicle_id'];
 		print_r($order->loadstop_line_items);
-print_r($order->consignor_line_items);
+
 		driver_list_row(_("Driver:"), 'driver_id', null, true, true, false, true);
 		
 		if( ($order->driver_id != get_post('driver_id', -1)) ||
@@ -1280,9 +1280,10 @@ global $path_to_root, $Ajax;
 
 div_start('routes_table');
 $Ajax->activate('routes_table');	
-	form_section_title($title);
-$var_loc_code ='';
 
+form_section_title($title);
+$var_loc_code ='';
+$var_marker_id = '';
 
 //print_r($_SESSION['Items']->loadstop_line_items);
 //print_r($_SESSION['Items']->consignor_line_items);
@@ -1297,10 +1298,14 @@ foreach ($order->loadstop_line_items as $stock_item)
 foreach ($order->loadstop_delivery_line_items as $stock_item)
         $var_loc_code = $var_loc_code .$stock_item->delivery_loc_code.",";
 
-$var_loc_code = rtrim($var_loc_code,",");
+foreach($order->loadstop_markers_line_items as $stock_item)
+        $var_marker_id = $stock_item->id.",".$var_marker_id;
 
+
+$var_loc_code = rtrim($var_loc_code,",");
+$var_marker_id = rtrim($var_marker_id,",");
         
-$var_src_path = $path_to_root."/transport/includes/ui/phpsqlinfo_add.php?ord=".$var_loc_code."&ref=".$order->reference;
+$var_src_path = $path_to_root."/transport/includes/ui/phpsqlinfo_add.php?ord=".$var_loc_code."&ref=".$order->reference."&markers=".$var_marker_id;
     echo "<iframe style=\"width: 800px; height: 800px\" src=".$var_src_path."></iframe>";
 
 //display_error ($var_map_html);
@@ -1350,7 +1355,7 @@ function display_stop_delivery_details($title, &$order, $editable_items=false)
 	form_section_title($title);
 
 	start_display_table('table','id');
-	$th = array(_("lineno"),_("Select Location"),_("Contact"), _("Address"),_("Date"),_("hours"),_("minutes"),_("time"), '');
+	$th = array(_("Select Location"),_("Contact"), _("Address"),_("Date"),_("hours"),_("minutes"),_("time"), '');
 	if ( count($order->loadstop_delivery_line_items)) $th[] = '';
 	display_table_header($th);
 	
@@ -1364,8 +1369,7 @@ function display_stop_delivery_details($title, &$order, $editable_items=false)
 		{
     		alt_table_row_color($k);
 
-                label_cell($line_no);
-			label_cell($stock_item->delivery_location_name);
+                        label_cell($stock_item->delivery_location_name);
                         label_cell($stock_item->delivery_contact);
                         label_cell($stock_item->delivery_address);
                        // label_cell($stock_item->city);
@@ -1427,7 +1431,6 @@ function display_edit_stop_delivery_details(&$order, $line_no=-1)
               $var_min = substr($var_time,$var_min_pos+1,strlen($var_time));
               
 		hidden('delivery_loc_code', $_POST['delivery_loc_code']);
-		label_cell($line_no);
 		label_cell($var_location_name);
                 text_cells("",'stop_delivery_contact',$var_contact);
                 text_cells(null,'stop_delivery_address', $var_address);
@@ -1450,7 +1453,6 @@ function display_edit_stop_delivery_details(&$order, $line_no=-1)
 	{
             //Prepare new line
             
-            label_cell($line_no);
                 echo "<td>";
     	delivery_locations_list_cells(null, 'delivery_loc_code', null, true,true,true,true);
         echo "</td>";

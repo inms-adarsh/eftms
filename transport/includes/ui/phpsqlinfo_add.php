@@ -14,7 +14,7 @@ if (!$db_selected) {
 
 $var_order = $_GET['ord'];
 $var_order_ref = $_GET['ref'];
-
+$var_marker_id = $_GET['markers'];
 //$var_order = "2,9";
 if (empty($var_order))
     $var_sql = "";
@@ -22,6 +22,13 @@ else
      $var_sql = "select * from 0_locations where loc_code in (".$var_order.")";
  
 echo($var_sql);
+
+if (empty($var_marker_id))
+    $var_mark_sql = "";
+else
+     $var_mark_sql = "select * from 0_transport_order_markers where id in (".$var_marker_id.")";
+ 
+echo($var_mark_sql);
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -113,7 +120,42 @@ if (!empty($var_sql))
     <?php 
     }
 }
-?> 
+
+if (!empty($var_mark_sql))
+{
+  $var_result = mysql_query($var_mark_sql);
+    while($var_row = mysql_fetch_array($var_result))
+    {
+          $var_lat = $var_row['lat'] ;    
+         $var_lon = $var_row['lng'];  
+         $var_id = $var_row['marker_id'];
+       ?>
+         var marker1 = new google.maps.Marker({
+        position: new google.maps.LatLng(<?=$var_lat?>,<?=$var_lon?>),
+        map: map,
+        title:<?=$var_id?>
+      });
+      google.maps.event.addListener(marker1, "click", function (e) {
+                var content = 'Latitude: ' + <?=$var_lat?> + '<br />Longitude: ' + <?=$var_lon?>;
+                content += "<br /><input type = 'button' va;ue = 'Delete' onclick = 'DeleteMarker(" + <?=$var_id?> + ", <?=$var_order_ref?>);' value = 'Delete' />\n\
+                <input type = 'button' id ='Save' name='Save' value = 'Save' onclick = 'SaveMarker("+<?=$var_lat?>+ ","+<?=$var_lon?>+"," + <?=$var_id?> +", <?=$var_order_ref?>);'  />\n\
+</br><div id = 'addedmsg'></div>";
+                    
+                var infoWindow = new google.maps.InfoWindow({
+                    content: content
+                });
+                infoWindow.open(map, marker1);
+            });
+            marker1.id = <?=$var_id?>;
+            markers.push(marker1);
+    <?php 
+    }
+    ?>
+            var uniqueId = <?=$var_id?> + 1;
+<?php } else { ?>
+var uniqueId =  1;
+
+<?php } ?> 
         
         // searching location
         // Create the search box and link it to the UI element.
@@ -206,9 +248,12 @@ if (!empty($var_sql))
     
     function DeleteMarker(id,order_ref) {
         //Find and remove the marker from the Array
+        alert('deleted');
         for (var i = 0; i < markers.length; i++) {
+            
             if (markers[i].id == id) {
                 //Remove the marker from Map                  
+                alert('inside array deleted');
                 markers[i].setMap(null);
  
                 //Remove the marker from array.
@@ -272,6 +317,6 @@ if (!empty($var_sql))
 <body>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="message"></div>
-    <div id="dvMap" style="width: 500px; height: 500px"></div>
+    <div id="dvMap" style="width: 1000px; height: 1000px"></div>
 </body>
 </html>

@@ -16,7 +16,7 @@ if (!$db_selected) {
 }
 // Insert new row with user data
 
-$query = sprintf(" DELETE FROM  markers   WHERE" .
+$query = sprintf(" DELETE FROM  0_transport_order_markers   WHERE" .
          " marker_id = '%s' AND order_ref = '%s'",
          mysql_real_escape_string($marker_id),
          $order_ref);
