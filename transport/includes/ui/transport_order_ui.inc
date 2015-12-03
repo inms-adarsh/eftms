@@ -904,7 +904,7 @@ function display_carrier_info(&$order)
 		form_section_title(_("Vehicle Details"));
 		vehicle_list_row(_("Vehicle:"), 'vehicle_id', $order->vehicle_id, true, true, false, true);
 		$order->vehicle_id=$_POST['vehicle_id'];
-		print_r($order->loadstop_line_items);
+		//print_r($order->loadstop_line_items);
 
 		driver_list_row(_("Driver:"), 'driver_id', null, true, true, false, true);
 		

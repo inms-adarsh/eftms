@@ -1,4 +1,26 @@
 <!-- begin row -->
+<?php
+global $path_to_root;
+?>
+<div class="row">
+    <div class="col-md-3 col-sm-6">
+        <div class="widget widget-stats bg-green" > <form action=<?php echo $path_to_root?>/transport/transport_order_entry.php?NewOrder=Yes><input   style="text-align:justify;background-color:black;" color ="green" type="submit"  value=" Create New Load "></form>
+        </div>     
+    </div>
+        <div class="col-md-3 col-sm-6">
+        <div class="widget widget-stats bg-green" > <form action=<?php echo $path_to_root?>/transport/manage/new_consignor.php?NewConsignor=Yes><input   style="text-align:justify;background-color:black;" color ="green" type="submit"  value=" Create New Customer "></form>
+        </div>     
+    </div>
+        <div class="col-md-3 col-sm-6">
+        <div class="widget widget-stats bg-green" > <form action=<?php echo $path_to_root?>/transport/manage/new_driver.php?NewDriver=Yes><input   style="text-align:justify;background-color:black;" color ="green" type="submit"  value=" Create New Driver "></form>
+        </div>     
+    </div>
+        <div class="col-md-3 col-sm-6">
+        <div class="widget widget-stats bg-green" > <form action=<?php echo $path_to_root?>/transport/manage/new_vehicle.php?NewVehicle=Yes><input   style="text-align:justify;background-color:black;" color ="green" type="submit"  value=" Create New Vehicle "></form>
+        </div>     
+    </div>
+</div> 
+<!-- begin row -->
             <div class="row">
                 <!-- begin col-3 -->
                 <div class="col-md-3 col-sm-6">
