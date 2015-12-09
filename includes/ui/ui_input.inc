@@ -660,6 +660,7 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 				$dd = add_months($dd, $inc_months);
 			if ($inc_years != 0)
 				$dd = add_years($dd, $inc_years);
+                        
 			$_POST[$name] = $dd;
 		}
 	}
@@ -675,18 +676,19 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 		label_cell($label, $params);
 
 	
-	
+
 	$class = $submit_on_change ? 'form-control date datepicker active' : 'form-control date datepicker';
 
-	$aspect = $check ? 'aspect="cdate"' : '';
+	//$aspect = $check ? 'aspect="cdate"' : '';
 	if ($check && (get_post($name) != Today()))
 		$aspect .= ' style="color:#FF0000"';
 
 	default_focus($name);
+        
 	$size = (user_date_format()>3)?11:10; 
-	echo "<input type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"$size\" maxlength=\"12\" value=\"" 
+	echo "<input type=\"text\" id = \"$name\" name=\"$name\" class=\"$class\" $aspect size=\"$size\" maxlength=\"12\" value=\"" 
 	 . $_POST[$name]. "\""
-	 .($title ? " title='$title'": '')." >";
+	 .($title ? " title='$title'": '')." onclick=\"$($name).datepicker().focus();\">";
 
 	$Ajax->addUpdate($name, $name, $_POST[$name]);
 }
