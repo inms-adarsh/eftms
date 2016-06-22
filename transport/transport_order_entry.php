@@ -666,7 +666,7 @@ function check_item_data() {
 		display_error(_("Item description cannot be empty."));
 		set_focus('stock_id_edit');
 		return false;
-	} elseif (!check_num('qty', 0) || !check_num('Disc', 0, 100) && $_SESSION['Items'] -> trans_type != ST_TRANSPORTQUOTE && $_SESSION['Items'] -> trans_type != ST_TRANSPORTBOOKING) {
+	} elseif (!check_num('qty', 0)) {
 		display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
 		return false;
@@ -705,7 +705,7 @@ function check_item_data() {
 function handle_update_item() {
 
 	if ($_POST['UpdateItem'] != '' && check_item_data()) {
-		$_SESSION['Items'] -> update_cart_item($_POST['LineNo'], input_num('qty'), get_post('to_units'), input_num('price'), input_num('Disc') / 100, $_POST['item_description']);
+		$_SESSION['Items'] -> update_cart_item($_POST['LineNo'], input_num('qty'), get_post('to_units'), input_num('price'),get_post('flat_rate'), $_POST['item_description']);
 	}
 	page_modified();
 	line_start_focus();
@@ -916,7 +916,7 @@ function handle_new_item() {
 		return;
 	}
 
-	add_to_order($_SESSION['Items'], get_post('stock_id'), input_num('qty'), get_post('to_units'), input_num('price'), input_num('Disc') / 100, get_post('stock_id_text'));
+	add_to_order($_SESSION['Items'], get_post('stock_id'), input_num('qty'), get_post('to_units'), input_num('price'),get_post('flat_rate'), get_post('stock_id_text'));
 
 	unset($_POST['_stock_id_edit'], $_POST['stock_id']);
 	page_modified();
@@ -1219,13 +1219,23 @@ if ($consignor_error == "") {
 } else {
 	display_error($consignor_error);
 }
-static_tabs('tabs', array('basics' => array(_('&Load Basics'), $selected_id), 'bill' => array(_('&Customer'), $selected_id), 'consignor' => array(_('&Consignor Info'), $selected_id), 'consignee' => array(_('&Consignee Info'), $selected_id), 'stops' => array(_('&Edit Stops'), $selected_id),  'Routes' => array(_('&Routes'), $selected_id),'carrier_info' => array(_('&Carrier Info'), $selected_id), 'freight' => array(_('&Freight Calculation'), $selected_id), 'pe' => array(_('&Income & Expenses'), $selected_id)));
+static_tabs('tabs', 
+	array('basics' => array(_('&Load Basics'), $selected_id), 
+	'bill' => array(_('&Party Info'), $selected_id), 
+	'consignor' => array(_('&Consignor Info'), $selected_id), 
+	'consignee' => array(_('&Consignee Info'), $selected_id), 
+	/*'stops' => array(_('&Edit Stops'), $selected_id),  
+	'Routes' => array(_('&Routes'), $selected_id),*/
+	'carrier_info' => array(_('&Carrier Info'), $selected_id), 
+	'freight' => array(_('&Freight Calculation'), $selected_id), 
+	'pe' => array(_('&Income & Expenses'), $selected_id)));
 
 start_form_section('tab-content');
 
 start_form_section('tab-pane fade active in', 'basics');
 $consignor_error = display_order_header($_SESSION['Items'], ($_SESSION['Items'] -> any_already_delivered() == 0), $idate);
 display_load_basics($_SESSION['Items'], ($_SESSION['Items'] -> any_already_delivered() == 0), $idate);
+echo "<a class='btn btn-primary btnNext' >Next</a>";
 end_form_section();
 
 start_form_section('tab-pane fade in', 'bill');
@@ -1239,7 +1249,7 @@ end_form_section();
 start_form_section('tab-pane fade in', 'consignee');
 display_consignee_info($_SESSION['Items'], ($_SESSION['Items'] -> any_already_delivered() == 0), $idate);
 end_form_section();
-
+/*
 start_form_section('tab-pane fade in', 'stops');
 display_stop_details('Pickup Details', $_SESSION['Items'], true);
 display_stop_delivery_details('Delivery Details', $_SESSION['Items'], true);
@@ -1247,7 +1257,7 @@ end_form_section();
 
 start_form_section('tab-pane fade in', 'Routes');
 display_stop_googlemap_details('Route Details', $_SESSION['Items'], true);
-end_form_section();
+end_form_section();*/
 
 start_form_section('tab-pane fade in', 'carrier_info');
 display_carrier_info($_SESSION['Items']);

@@ -22,7 +22,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-
+$_POST['order_view_mode'] = 'OutstandingOnly';
 if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
 {
 	$_POST['OutstandingOnly'] = true;
@@ -98,7 +98,7 @@ if (get_post('_DeliveryNumber_changed'))
 
 start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=".$_POST['OutstandingOnly']);
 
-start_table(TABLESTYLE_NOBORDER);
+/*start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'DeliveryNumber', '',null, '', true);
 date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
@@ -119,7 +119,7 @@ hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 
 end_row();
 
-end_table(1);
+end_table(1);*/
 //---------------------------------------------------------------------------------------------
 
 if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
@@ -173,20 +173,28 @@ function check_overdue($row)
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_transport_deliveries_view($selected_consignor, $selected_stock_item);
+$sql = get_sql_for_transport_orders_view($selected_consignor, $trans_type,$_POST['order_view_mode']);
 
 $cols = array(
-		_("Delivery #") => array('fun'=>'trans_view'), 
-		_("Consignor"), 
-		'branch_code' => 'skip',
-		_("Branch") => array('ord'=>''), 
-		_("Contact"),
-		_("Reference"), 
-		_("Cust Ref"), 
-		_("Delivery Date") => array('type'=>'date', 'ord'=>''),
-		_("Due By") => 'date', 
-		_("Delivery Total") => array('type'=>'amount', 'ord'=>''),
-		_("Currency") => array('align'=>'center'),
+		_("Bilty #") => array('fun'=>'view_link'),
+		_("Ref"),
+		_("Customer"),
+	/*	_("Consignor") => array('type' => 'consignor_name' , 'ord' => '') ,
+		_("Branch"),
+				
+	*/	_("Contact Person"),
+		_("Bilty Date"),
+		_("Required By"),
+		_("Load Status"),
+		_("Carrier Status"),
+		_("Delivery From"), 
+		_("Delivery To"), 
+	/*	_("Bilty Total") => array('type'=>'amount', 'ord'=>''),
+		'Type' => 'skip',
+		_("Currency") => array('align'=>'center'),*/
+	    _("Freight"),
+	    _("Income"),
+        _("Expenses"),
 		submit('BatchInvoice',_("Batch"), false, _("Batch Invoicing")) 
 			=> array('insert'=>true, 'fun'=>'batch_checkbox', 'align'=>'center'),
 		array('insert'=>true, 'fun'=>'edit_link'),

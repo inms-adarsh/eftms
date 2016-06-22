@@ -138,16 +138,22 @@ function location_settings(&$location_id)
         hidden("location_id",$location_id);
     }
 start_table(TABLESTYLE2);
- 
-text_row_ex(_("Location Name:"), 'location_name', 50, 50,null,null,null,null,'locality');
-text_row_ex(_("Contact for deliveries:"), 'contact', 30, 30);
+label_row(_("Search Address"),"<input id='autocomplete' style='width:300px' placeholder='Enter your address' autoComplete='off' onFocus='geolocate()' type='text'></input>");
 
-textarea_row(_("Address:"), 'delivery_address', null, 35, 5,null,null,'address');   
+text_row_ex(_("Location Name:"), 'location_name', 50, 50,null,null,null,null,'locality');
+
+textarea_row(_("Address:"), 'delivery_address', null, 35, 5,null,null,'address');
+
+text_row_ex(_("Contact for deliveries:"), 'contact', 30, 30);
 
 text_row_ex(_("Telephone No:"), 'phone', 32, 30);
 text_row_ex(_("Secondary Phone Number:"), 'phone2', 32, 30);
 text_row_ex(_("Facsimile No:"), 'fax', 32, 30);
 email_row_ex(_("E-mail:"), 'email', 30);
+
+start_form_section('','map');
+
+end_form_section();
 end_table();
 }
 
@@ -184,6 +190,7 @@ hidden('popup', @$_REQUEST['popup']);
 end_form();
 
 //------------------------------------------------------------------------------------
+echo "<script src='$path_to_root/themes/coloradmin/js/geolocation.js'></script>";
 
 end_page(@$_REQUEST['popup']);
 ?>

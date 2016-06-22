@@ -516,14 +516,13 @@ function get_consign_items()
 
         
         
-	function add_to_cart($line_no, $stock_id, $qty,$to_units, $price, $disc, $qty_done=0, $standard_cost=0, $description=null, $id=0, $src_no=0,
+	function add_to_cart($line_no, $stock_id, $qty,$to_units, $price, $flat_rate, $qty_done=0, $standard_cost=0, $description=null, $id=0, $src_no=0,
 		$src_id=0)
 		
 	{
 	
-		$line = new line_details($stock_id, $qty,$to_units, $price, $disc,
+		$line = new line_details($stock_id, $qty,$to_units, $price, $flat_rate,
 			$qty_done,  $standard_cost, $description, $id, $src_no, $src_id);
-
 		if ($line->valid) {
 			$this->line_items[$line_no] = $line;
 			return 1;
@@ -532,7 +531,7 @@ function get_consign_items()
 		return 0;
 	}
 
-	function update_cart_item($line_no, $qty, $to_units,$price, $disc, $description="")
+	function update_cart_item($line_no, $qty, $to_units,$price,$flat_rate, $description="")
 	{
 		if ($description != "")
 			$this->line_items[$line_no]->item_description = $description;
@@ -540,10 +539,7 @@ function get_consign_items()
 		$this->line_items[$line_no]->qty_dispatched = $qty;
 		$this->line_items[$line_no]->price = $price;
 		$this->line_items[$line_no]->to_units = $to_units;
-		
-		$this->line_items[$line_no]->discount_percent = $disc;
-
-		print_r($this->line_items);
+		$this->line_items[$line_no]->flat_rate = $flat_rate;
 	}
 //-------------- Prabha added to update consignor item------------------------------
 function update_consignor_cart_item($line_no, $consignor_no,$tin_no, $address,$phone,$email=null)
@@ -660,9 +656,16 @@ function update_consignor_cart_item($line_no, $consignor_no,$tin_no, $address,$p
 
 		foreach ($this->line_items as $ln_itm) {
 			$items[] = $ln_itm->stock_id;
-			$prices[] = round(((
+			if($ln_itm->flat_rate)
+			{
+				$prices[] = round($ln_itm->line_price(),  user_price_dec());
+			}
+			else
+			{
+				$prices[] = round((
 				$this->trans_type==ST_TRANSPORTORDER ? 	$ln_itm->quantity : $ln_itm->qty_dispatched) *
-				$ln_itm->line_price()* (1 - $ln_itm->discount_percent)),  user_price_dec());
+				$ln_itm->line_price(),  user_price_dec());
+			}
 		}
 
 		$taxes = get_tax_for_transportable_items($items, $prices, $shipping_cost,
@@ -915,11 +918,10 @@ class line_details
 	var $src_no;	// number of src doc for this line
 	var $src_id;
 	var $price;
-	var $discount_percent;
 	var $to_units;
 	var $standard_cost;
 	var $descr_editable;
-
+	var $flat_rate;
 	var $valid; // validation in constructor
 	/*
 		Line quantity properties in various cart create modes:
@@ -948,7 +950,7 @@ class line_details
 	var $qty_old = 0;
 
 
-	function line_details ($stock_id, $qty,$to_units, $prc, $disc_percent,
+	function line_details ($stock_id, $qty,$to_units, $prc,$flat_rate,
 		$qty_done, $standard_cost, $description, $id=0, $src_no=0, $src_id=0)
 	{
 	/* Constructor function to add a new LineDetail object with passed params */
@@ -973,10 +975,10 @@ class line_details
 		//$this->tax_type_name = $item_row["tax_type_name"];
 		$this->stock_id = $stock_id;
 		$this->quantity = $qty;
+		$this->flat_rate = $flat_rate;
 		$this->to_units = $to_units;
 		$this->qty_dispatched = $qty;
 		$this->price = $prc;
-		$this->discount_percent = $disc_percent;
 		$this->qty_done = $qty_done;
 		$this->standard_cost = $standard_cost;
 		$this->valid = true;

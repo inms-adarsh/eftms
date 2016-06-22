@@ -11,17 +11,17 @@
 ***********************************************************************/
 
 function add_consignor($CustName, $consignor_ref, $address, $location, 
-	 $notes, $tin_no,$contact_name,$phone,$email)
+	 $notes, $tin_no,$contact_name,$phone,$email,$curr_code)
 {
 	$sql = "INSERT INTO ".TB_PREF."consignors_master (name, consignor_ref, address, default_location,
-		notes,tin_no,contact_name,phone,email) VALUES ("
+		notes,tin_no,contact_name,phone,email,curr_code) VALUES ("
 		.db_escape($CustName) .", " .db_escape($consignor_ref) .", "
-		.db_escape($address) . ",  ".db_escape($location) . ",".db_escape($notes) . ", ".db_escape($tin_no).", ".db_escape($contact_name).",".db_escape($phone).",".db_escape($email).")";
+		.db_escape($address) . ",  ".db_escape($location) . ",".db_escape($notes) . ", ".db_escape($tin_no).", ".db_escape($contact_name).",".db_escape($phone).",".db_escape($email).",".db_escape($curr_code).")";
 
 	db_query($sql,"The consignor could not be added");
 }
 
-function update_consignor($consignor_id, $CustName, $consignor_ref, $address,$location, $notes, $tin_no,$contact_name,$phone,$email)
+function update_consignor($consignor_id, $CustName, $consignor_ref, $address,$location, $notes, $tin_no,$contact_name,$phone,$email,$curr_code)
 {
 	$sql = "UPDATE ".TB_PREF."consignors_master SET name=" . db_escape($CustName) . ", 
 		consignor_ref=" . db_escape($consignor_ref) . ",
@@ -31,7 +31,8 @@ function update_consignor($consignor_id, $CustName, $consignor_ref, $address,$lo
 		tin_no = ".db_escape($tin_no).",
 		contact_name = ".db_escape($contact_name).",
 		phone = ".db_escape($phone).",
-		email = ".db_escape($email)."
+		email = ".db_escape($email).",
+		curr_code = ".db_escape($curr_code)."
 		WHERE consignor_no = ".db_escape($consignor_id);
 
 	db_query($sql,"The consignor could not be updated");

@@ -482,7 +482,7 @@ function display_supp_trans_tax_details($tax_items, $columns)
 function display_edit_tax_items($taxes, $columns, $tax_included, $rightspan=0, $editable=false)
 {
 	$total = 0;
-
+	//print_r($taxes);
     foreach ($taxes as $taxitem)
 	{
 		$amount = isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
@@ -496,7 +496,7 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $rightspan=0, $
 					label_cell(_("Included") . " " . $taxitem['tax_type_name'].":",
 						"colspan={$colspan} align='right'");
 					amount_cells(null, 'mantax['.$taxitem['tax_type_id'].']',
-						null, "colspan=$columns align=right", '<td></td>', user_price_dec());
+						null, "colspan=$columns align=right", '', user_price_dec());
 				} else {
 					label_cell($taxitem['tax_type_name'], "colspan=$columns align='right'");
 					amount_cells(null, 'mantax['.$taxitem['tax_type_id'].']',
@@ -510,18 +510,23 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $rightspan=0, $
 				$value = number_format2($taxitem['Value'],user_price_dec());
 				if ($tax_included)
 				{
-					label_row(_("Included") . " " . $taxitem['tax_type_name']
-						. " " . $value , "", "colspan=$columns align=right", "align=right", $rightspan);
+					start_row();
+					label_cell($taxitem['tax_type_name'], "colspan=$columns align=right");
+					label_cell($value , "");
+					end_row();
 				}
 				else
 				{
-					label_row($taxitem['tax_type_name'],
-						$value, "colspan=$columns align=right", "align=right", $rightspan);
+					start_row();
+					label_cell($taxitem['tax_type_name'], "colspan=$columns align=right");
+					label_cell($value , "");
+					end_row();
 					$total +=  round2($taxitem['Value'], user_price_dec());
 				}
 			}
 		}
 	}
+//	echo $total;
 	return $total;
 }
 

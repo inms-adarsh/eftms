@@ -22,7 +22,16 @@ class consignors_app extends application
 		$this->add_rapp_function(0, _("&Template Delivery"),
 			"transport/inquiry/transport_orders_view.php?DeliveryTemplates=Yes", 'SA_TRANSPORTDELIVERY', MENU_TRANSACTION);
 	
-	
+			$this->add_lapp_function(0, _("&Delivery Against Bilty"),
+			"transport/inquiry/transport_orders_view.php?OutstandingOnly=1", 'SA_TRANSPORTDELIVERY', MENU_TRANSACTION);
+		$this->add_lapp_function(0, _("&Invoice Against Transport Deliveries"),
+			"transport/inquiry/transport_deliveries_view.php?OutstandingOnly=1", 'SA_TRANSPORTINVOICE', MENU_TRANSACTION);
+		$this->add_rapp_function(0, _("Consignor &Payments"),
+			"transport/consignor_payments.php?", 'SA_TRANSPORTPAYMNT', MENU_TRANSACTION);
+		$this->add_rapp_function(0, _("Consignor &Credit Notes"),
+			"transport/credit_note_entry.php?NewCredit=Yes", 'SA_TRANSPORTCREDIT', MENU_TRANSACTION);
+		$this->add_rapp_function(0, _("&Allocate Consignor Payments or Credit Notes"),
+			"transport/allocations/consignor_allocation_main.php?", 'SA_TRANSPORTALLOC', MENU_TRANSACTION);
 
 		$this->add_module(_("People"));
 		$this->add_lapp_function(1, _("&Customers"),
@@ -35,6 +44,7 @@ class consignors_app extends application
 		
 			$this->add_lapp_function(2, _("&Transportable Items"),
 			"transport/manage/items.php?", 'SA_ITEM', MENU_ENTRY);
+			
 			$this->add_rapp_function(2, _("&Units of Measure"),
 			"inventory/manage/item_units.php?", 'SA_UOM', MENU_MAINTENANCE);
 			$this->add_rapp_function(2, _("&Status Labels"),

@@ -198,14 +198,15 @@ function JsHttpRequest() {
             status = 500;
             statusText = "Internal Server Error";
         }
-       /*  App.init();
+        App.init();
             $('.datatable').DataTable({
             dom: 'CT<"clear">lfrtip',
             tableTools: {
                 "sSwfPath": '<?php echo $path_to_root; ?>/themes/<?php echo $theme; ?>/assets/plugins/DataTables/swf/copy_csv_xls_pdf.swf'
-            }
+            },
+            bDestroy: 'true'
          });
-         FormPlugins.init();*/
+         FormPlugins.init();
         _changeReadyState(2);
         _changeReadyState(3);
         _changeReadyState(4);

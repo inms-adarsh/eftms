@@ -89,14 +89,14 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 	$ord = new Cart(ST_TRANSPORTORDER, $_GET['OrderNumber'], true);
 
-	if ($ord->count_items() == 0) {
+	/*if ($ord->count_items() == 0) {
 		hyperlink_params($path_to_root . "/transport/inquiry/transport_orders_view.php",
 			_("Select a different bilty to delivery"), "OutstandingOnly=1");
 		die ("<br><b>" . _("This bilty has no items. There is nothing to delivery.") . "</b>");
 	}
-
+*/
  	// Adjust Shipping Charge based upon previous deliveries TAM
-	adjust_shipping_charge($ord, $_GET['OrderNumber']);
+	//adjust_shipping_charge($ord, $_GET['OrderNumber']);
  
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();

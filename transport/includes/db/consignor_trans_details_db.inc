@@ -63,18 +63,17 @@ function write_consignor_trans_detail_item($consignor_trans_type, $consignor_tra
 			to_units=".db_escape($to_units).",
 			unit_price=$unit_price,
 			unit_tax=$unit_tax,
-			discount_percent=$discount_percent,
 			standard_cost=$std_cost,
 			src_id=".db_escape($src_id)." WHERE
 			id=".db_escape($line_id);
 	else
 			$sql = "INSERT INTO ".TB_PREF."consignor_trans_details (consignor_trans_no,
 				consignor_trans_type, stock_id, description, quantity, to_units,unit_price,
-				unit_tax, discount_percent, standard_cost, src_id)
+				unit_tax,  standard_cost, src_id)
 			VALUES (".db_escape($consignor_trans_no).", ".db_escape($consignor_trans_type).", ".db_escape($stock_id).
 			", ".db_escape($description).",
 				$quantity, ".db_escape($to_units).", $unit_price, $unit_tax, 
-				$discount_percent, $std_cost,".db_escape($src_id).")";
+				 $std_cost,".db_escape($src_id).")";
 
 	db_query($sql, "The consignor transaction detail could not be written");
 }

@@ -499,7 +499,7 @@ function add_to_consignor_order(&$order, $consignor_no,$consignor_name,$tin_no,$
 
 }
 //-------Prabha ended---------------------------------------------------------
-function add_to_order(&$order, $new_item, $new_item_qty,$to_units, $price, $discount, $description='')
+function add_to_order(&$order, $new_item, $new_item_qty,$to_units, $price, $flat_rate, $description='')
 {
 	// calculate item price to sum of kit element prices factor for 
 	// value distribution over all exploded kit items
@@ -533,7 +533,7 @@ function add_to_order(&$order, $new_item, $new_item_qty,$to_units, $price, $disc
 	 if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id'])
 	 {	// this is transport kit - recurse 
 		add_to_order($order, $item['stock_id'], $new_item_qty*$item['quantity'],$to_units,
-			$item_price, $discount);
+			$item_price, $flat_rate);
 	 }
 	 else
 	 {	// stock item record eventually with foreign code
@@ -550,7 +550,7 @@ function add_to_order(&$order, $new_item, $new_item_qty,$to_units, $price, $disc
 		}
 		
 		$order->add_to_cart (count($order->line_items),	$item['stock_id'], 
-			$new_item_qty*$item['quantity'],$to_units, $item_price, $discount, 0,0, $description);
+			$new_item_qty*$item['quantity'],$to_units, $item_price, $flat_rate, 0,0, $description);
 	 }
 	}
 
@@ -678,11 +678,11 @@ function display_order_summary($title, &$order, $editable_items=false)
 	start_display_table('table','id');
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		
-		_("Unit"), $order->tax_included ? _("Rate") : _("Rate"), _("Discount %"), _("Total"), "","");
+		_("Unit"),_("Flat Rate"),$order->tax_included ? _("Rate") : _("Rate"),/* _("Discount %"), */_("Total"), "","");
 
-	if ($order->trans_no == 0) {
+/*	if ($order->trans_no == 0) {
 	unset( $th[3] );
-	}
+	}*/
 
 	if (count($order->line_items))
 	     $th[]= '';
@@ -692,15 +692,20 @@ function display_order_summary($title, &$order, $editable_items=false)
 	$total = 0;
 	$k = 0;  //row colour counter
 
-	$id = find_submit('Edit');
+	$id = find_submit('EditLineItem');
 	$has_marked = false;
 
 	foreach ($order->get_items() as $line_no=>$stock_item)
 	{
-
-		$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent),
+        if($stock_item->flat_rate)
+        {
+		  $line_total = round($stock_item->price ,
 		   user_price_dec());
-
+        }
+        else {
+            $line_total = round($stock_item->qty_dispatched * $stock_item->price ,
+           user_price_dec());
+        }
 		$qoh_msg = '';
 		if (!$editable_items || $id != $line_no)
 		{
@@ -718,14 +723,22 @@ function display_order_summary($title, &$order, $editable_items=false)
 */
 			//label_cell($stock_item->units);
 			label_cell($stock_item->to_units);
+            if($stock_item->flat_rate ==1)
+            {
+                label_cell(_("Yes"));
+            }
+            else
+            {
+                label_cell(_("No"));
+            }
 			amount_cell($stock_item->price);
 
-			percent_cell($stock_item->discount_percent * 100);
+			//percent_cell($stock_item->discount_percent * 100);
 			amount_cell($line_total);
 
 			if ($editable_items)
 			{
-				edit_button_cell("EditItem$line_no", _("Edit"),
+				edit_button_cell("EditLineItem$line_no", _("Edit"),
 				_('Edit document line'));
 				delete_button_cell("DeleteItem$line_no", _("Delete"),
 				_('Remove line from document'));
@@ -885,7 +898,7 @@ function display_load_basics(&$order, $editable, $date_text)
 	*/
 	
 	delivery_locations_list_row(_("Deliver from Location:"), 'Location', null, false,true,false,true);
-	shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
+	shippers_list_row(_("Transporter:"), 'ship_via', $order->ship_via);
 		
 /*	all_truck_length_type_list_row(_("Truck Length"), 'TruckLengthTypeList', null, false, 
 		null,true,false,true);
@@ -901,7 +914,7 @@ function display_load_basics(&$order, $editable, $date_text)
 function display_carrier_info(&$order)
 {
 	global $Ajax, $SysPrefs;
-		form_section_title(_("Vehicle Details"));
+	/*	form_section_title(_("Vehicle Details"));
 		vehicle_list_row(_("Vehicle:"), 'vehicle_id', $order->vehicle_id, true, true, false, true);
 		$order->vehicle_id=$_POST['vehicle_id'];
 		//print_r($order->loadstop_line_items);
@@ -942,7 +955,7 @@ function display_carrier_info(&$order)
 		}
 			text_row(_("Driver Contact Number:"), 'driver_ref', $order->driver_ref, 25, 25,
 		  _('Driver Contact number for this order (if any)'));
-	
+	*/
 		
 		form_section_title(_("Goods Details"));
 		amount_row(_("Total Goods Value:"), 'total_goods_value', price_format(get_post('total_goods_value',0)));
@@ -1011,8 +1024,6 @@ function display_consignee_info(&$order, $editable, $date_text)
 		$consignee_error = "";
 		
 		form_section_title(_("Consignee Details"));
-                print_r($order->loadstop_line_items);
-print_r($order->consignor_line_items);
 		consignor_list_row(_("Customer:"), 'consignee_id', null, true, true, false, true);
 		  if(list_updated('consignee_id')) 
 		{
@@ -1644,15 +1655,17 @@ function transport_order_item_controls(&$order, &$rowcounter, $line_no=-1)
     global $Ajax;
 	alt_table_row_color($rowcounter);
 
-	$id = find_submit('EditItem');
-	if ($line_no!=-1 && $line_no == $id) // edit old line
+	$id = find_submit('EditLineItem');
+ //   echo $id;
+ 	if ($line_no!=-1 && $line_no == $id) // edit old line
 	{
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$dec = get_qty_dec($_POST['stock_id']);
 		$_POST['qty'] = number_format2($order->line_items[$id]->qty_dispatched, $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent*100);
-		
+		$_POST['flat_rate'] = percent_format($order->line_items[$id]->flat_rate);
+        
 		//$to_units = $order->line_items[$id]->to_units;
 		$_POST['item_description'] = $order->line_items[$id]->item_description;
 		hidden('stock_id', $_POST['stock_id']);
@@ -1712,14 +1725,23 @@ function transport_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	echo "</td>";
 	}
 	//label_cell($units, '', 'units');
-
+     check_table_cells(null, 'flat_rate', null, true);
+    
 	amount_cells(null, 'price');
 
-	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
+	/*small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
+*/
+    if(get_post('flat_rate') == 1)
+    {
 
-	$line_total = input_num('qty') * input_num('price') * (1 - input_num('Disc') / 100);
-
-	amount_cell($line_total, false, '','line_total');
+	   $line_total = input_num('price');
+    
+    }
+    else
+    {
+        $line_total = input_num('qty') * input_num('price');
+   }
+   amount_cell($line_total, false, '','line_total');
 
 	if ($id!=-1)
 	{

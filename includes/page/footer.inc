@@ -197,6 +197,13 @@ function page_footer($no_menu=false, $is_index=false)
            });
            FormPlugins.init();
         });
+        $('.btnNext').click(function(){
+            $('.nav-tabs > .active').next('li').find('a').trigger('click');
+        });
+
+         $('.btnPrevious').click(function(){
+             $('.nav-tabs > .active').prev('li').find('a').trigger('click');
+        });
 	</script>
 	<?php
 	 echo "</body></html>\n";

@@ -305,7 +305,6 @@ function get_tax_for_transportable_items($items, $prices, $shipping_cost, $tax_g
 			}
 		}
 	}
-
 	// add the shipping taxes, only if non-zero, and only if tax group taxes shipping
 	if ($shipping_cost != 0) 
 	{
@@ -340,7 +339,6 @@ function get_tax_for_transportable_items($items, $prices, $shipping_cost, $tax_g
 		}
 	}
 	//print_r($ret_tax_array);
-
 	return $ret_tax_array;
 }
 

@@ -152,13 +152,13 @@ function add_transport_order(&$order)
 	foreach ($order->line_items as $line)
 	{
 		
-		$sql = "INSERT INTO ".TB_PREF."transport_order_details (order_no, trans_type, stk_code, description, unit_price, quantity,to_units, discount_percent) VALUES (";
+		$sql = "INSERT INTO ".TB_PREF."transport_order_details (order_no, trans_type, stk_code, description, unit_price, quantity,to_units, flat_rate) VALUES (";
 		$sql .= $order_no . ",".$order->trans_type .
 				",".db_escape($line->stock_id).", "
 				.db_escape($line->item_description).", $line->price,
 				$line->quantity,"
-				.db_escape($line->to_units).",
-				$line->discount_percent)";
+				.db_escape($line->to_units).","
+				.db_escape($line->flat_rate).")";
 		db_query($sql, "order Details Cannot be Added");
 
 	// Now mark quotation line as processed
@@ -478,7 +478,7 @@ function update_transport_order($order)
 								unit_price = ".db_escape($line->price) . ",
 								quantity = ".db_escape($line->quantity) . ",
 								to_units = ".db_escape($line->to_units) . ",
-								discount_percent = ".db_escape($line->discount_percent) . "
+								flat_rate = ".db_escape($line->flat_rate) . "
 						WHERE id = {$line->id}";
 		}
 		else {
@@ -493,7 +493,7 @@ function update_transport_order($order)
 		   .db_escape($line->to_units) . ",
 		  ".db_escape($line->price) . ", "
 		  .db_escape($line->quantity) . ", "
-		  .db_escape($line->discount_percent) . ", "
+		  .db_escape($line->flat_rate) . ", "
 		  .db_escape($line->qty_done) ." )";
 		}
 
@@ -838,7 +838,7 @@ function get_transport_order_details($order_no, $trans_type) {
 	$sql = "SELECT id, stk_code, unit_price,to_units, "
 		.TB_PREF."transport_order_details.description,"
 		.TB_PREF."transport_order_details.quantity,
-		  discount_percent,
+		  flat_rate,
 		  qty_sent as qty_done
 	FROM ".TB_PREF."transport_order_details, ".TB_PREF."transport_items_master
 	WHERE ".TB_PREF."transport_order_details.stk_code = ".TB_PREF."transport_items_master.stock_id
@@ -988,7 +988,7 @@ function read_transport_slip($order_no, &$order, $trans_type)
 		while ($myrow = db_fetch($result))
 		{
 			$order->add_to_cart($line_no,$myrow["stk_code"],$myrow["quantity"],$myrow["to_units"],
-				$myrow["unit_price"], $myrow["discount_percent"],
+				$myrow["unit_price"], $myrow["flat_rate"],
 				$myrow["qty_done"], $myrow["standard_cost"], $myrow["description"], $myrow["id"] );
 		$line_no++;
 		}
@@ -1148,7 +1148,7 @@ function read_transport_booking($order_no, &$order, $trans_type)
 		while ($myrow = db_fetch($result))
 		{
 			$order->add_to_cart($line_no,$myrow["stk_code"],$myrow["quantity"],$myrow["to_units"],
-				$myrow["unit_price"], $myrow["discount_percent"],
+				$myrow["unit_price"], $myrow["flat_rate"],
 				$myrow["qty_done"], $myrow["standard_cost"], $myrow["description"], $myrow["id"] );
 		$line_no++;
 		}
@@ -1320,7 +1320,7 @@ $order->contact_phone=$myrow["contact_phone"];
 		while ($myrow = db_fetch($result))
 		{
 			$order->add_to_cart($line_no,$myrow["stk_code"],$myrow["quantity"],$myrow["to_units"],
-				$myrow["unit_price"], $myrow["discount_percent"],
+				$myrow["unit_price"], $myrow["flat_rate"],
 				$myrow["qty_done"], 0, $myrow["description"], $myrow["id"] );
 		$line_no++;
 		}

@@ -368,8 +368,8 @@ elseif ($trans_type == ST_TRANSPORTBOOKING) {
 
 
 $table =& new_db_pager('orders_tbl', $sql, $cols,null,null,20);
-$table->set_marker('check_overdue', _("Marked items are overdue."));
-
+/*$table->set_marker('check_overdue', _("Marked items are overdue."));
+*/
 $table->width = "80%";
 
 display_db_pager($table,'orders_tbl');

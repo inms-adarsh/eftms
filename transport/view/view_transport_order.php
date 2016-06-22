@@ -20,6 +20,7 @@ include_once($path_to_root . "/transport/includes/transport_ui.inc");
 include_once($path_to_root . "/transport/includes/transport_db.inc");
 
 $js = "";
+
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
 
@@ -68,8 +69,6 @@ label_cells(_("Customer TIN No."), $_SESSION['View']->billing_tin_no, "class='ta
 start_row();
 label_cells(_("Billing Person"), $_SESSION['View']->bill_to, "class='tableheader2'");
 label_cells(_("Billing Address"), $_SESSION['View']->billing_address, "class='tableheader2'");
-label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
-	"class='tableheader2'", "colspan=3");
 end_row();
 start_row();
 label_cells(_("Driver."), $_SESSION['View']->driver_name, "class='tableheader2'");
@@ -77,7 +76,7 @@ label_cells(_("Vehicle."), $_SESSION['View']->vehicle_number_plate, "class='tabl
 end_row();
 start_row();
 label_cells(_("Contact Person."), $_SESSION['View']->contact_person, "class='tableheader2'");
-label_row(_("Telephone"), $_SESSION['View']->phone, "class='tableheader2'", "colspan=3");
+label_cells(_("Telephone"), $_SESSION['View']->phone, "class='tableheader2'", "colspan=3");
 end_row();
 start_row();
 label_cells(_("Goods Bill No."), $_SESSION['View']->goods_bill_no, "class='tableheader2'");
@@ -91,11 +90,15 @@ if ($_GET['trans_type'] == ST_TRANSPORTQUOTE)
 else
 	label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='tableheader2'");
 end_row();
+start_row();
+label_cells(_("Reference"), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");
+end_row();
+start_row();
+label_cells(_("Comments"), nl2br($_SESSION['View']->Comments), "class='tableheader2'");
+label_cells(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
+	"class='tableheader2'");
 
-label_row(_("Reference"), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");
-
-
-label_row(_("Comments"), nl2br($_SESSION['View']->Comments), "class='tableheader2'", "colspan=3");
+end_row();
 end_table();
 
 if ($_GET['trans_type'] != ST_TRANSPORTQUOTE)
@@ -287,17 +290,17 @@ foreach ($_SESSION['View']->line_items as $stock_item) {
 	qty_cell($stock_item->qty_done, false, $dec);
 	end_row();
 }
-
-label_row(_("Shipping + Service Tax"), price_format($_SESSION['View']->freight_cost),
+start_row();
+label_cells(_("Shipping + Service Tax"), price_format($_SESSION['View']->freight_cost),
 	"align=right colspan=6", "nowrap align=right", 1);
-
+end_row();
 $sub_tot = $_SESSION['View']->get_items_total() + $_SESSION['View']->freight_cost;
 
 $display_sub_tot = price_format($sub_tot);
-
-label_row(_("Sub Total"), $display_sub_tot, "align=right colspan=6",
+start_row();
+label_cells(_("Sub Total"), $display_sub_tot, "align=right colspan=6",
 	"nowrap align=right", 1);
-
+end_row();
 $taxes = $_SESSION['View']->get_taxes();
 
 $tax_total = display_edit_tax_items($taxes, 6, $_SESSION['View']->tax_included,2);

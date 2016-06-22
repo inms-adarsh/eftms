@@ -91,7 +91,7 @@ echo($var_mark_sql);
       }
     </style>
     
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false&libraries=places&callback=initAutocomplete"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAowQwqi_I-OQHu89UCjJEfYLb7HPeKijI&sensor=false&libraries=places&callback=initAutocomplete"></script>
 <script type="text/javascript">
     var markers = [];
     var uniqueId = 1;

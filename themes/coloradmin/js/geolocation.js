@@ -4,8 +4,7 @@ initialize();
 var placeSearch, autocomplete;
 var componentForm = {
   locality: 'long_name',
-  address: 'short_name',
-  short_locality: 'short_name'
+  address: 'short_name'
 };
 
 function initialize() {
@@ -40,7 +39,7 @@ function fillInAddress() {
     }
   document.getElementById('locality').value = addressType;
    document.getElementById('address').value = address;
-  document.getElementById('short_locality').value = shortLocality
+ // document.getElementById('short_locality').value = shortLocality
 
   }
 // [END region_fillform]

@@ -59,7 +59,7 @@ function end_page($no_menu=false, $is_index=false, $final_screen=false, $type_no
 {
 	global $path_to_root;
 
-	if (!$is_index && function_exists('hyperlink_back'))
+	/*if (!$is_index && function_exists('hyperlink_back'))*/
 		//hyperlink_back(true, $no_menu, $type_no, $trans_no, $final_screen);
 	/*echo "</div>";
 	echo "</div>";*/

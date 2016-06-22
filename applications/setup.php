@@ -53,10 +53,10 @@ class setup_app extends application
 			"admin/crm_categories.php?", 'SA_CRMCATEGORY', MENU_MAINTENANCE);
 
 		$this->add_module(_("Maintenance"));
-		$this->add_lapp_function(2, _("&Void a Transaction"),
+		/*$this->add_lapp_function(2, _("&Void a Transaction"),
 			"admin/void_transaction.php?", 'SA_VOIDTRANSACTION', MENU_MAINTENANCE);
 		$this->add_lapp_function(2, _("View or &Print Transactions"),
-			"admin/view_print_transaction.php?", 'SA_VIEWPRINTTRANSACTION', MENU_MAINTENANCE);
+			"admin/view_print_transaction.php?", 'SA_VIEWPRINTTRANSACTION', MENU_MAINTENANCE);*/
 		$this->add_lapp_function(2, _("&Attach Documents"),
 			"admin/attachments.php?filterType=20", 'SA_ATTACHDOCUMENT', MENU_MAINTENANCE);
 		$this->add_lapp_function(2, _("System &Diagnostics"),
@@ -81,12 +81,12 @@ class setup_app extends application
 			"admin/tags.php?type=account", 'SA_GLACCOUNTTAGS', MENU_MAINTENANCE);*/
 		
 	
-		$this->add_rapp_function(2, _("&GL Accounts"),
+		/*$this->add_rapp_function(2, _("&GL Accounts"),
 			"gl/manage/gl_accounts.php?", 'SA_GLACCOUNT', MENU_ENTRY);
 		$this->add_rapp_function(2, _("GL Account &Groups"),
 			"gl/manage/gl_account_types.php?", 'SA_GLACCOUNTGROUP', MENU_MAINTENANCE);
 		$this->add_rapp_function(2, _("GL Account &Classes"),
-			"gl/manage/gl_account_classes.php?", 'SA_GLACCOUNTCLASS', MENU_MAINTENANCE);
+			"gl/manage/gl_account_classes.php?", 'SA_GLACCOUNTCLASS', MENU_MAINTENANCE);*/
 		$this->add_extensions();
 	}
 }

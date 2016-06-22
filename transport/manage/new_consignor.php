@@ -89,7 +89,7 @@ function handle_submit(&$selected_id)
         
     if ($_POST['consignor_id']) 
     {
-        update_consignor($_POST['consignor_id'], $_POST['CustName'], $_POST['consignor_ref'], $_POST['address'],$_POST['location'],$_POST['notes'],$_POST['tin_no'],$_POST['contact_name'],$_POST['phone'],$_POST['email']);
+        update_consignor($_POST['consignor_id'], $_POST['CustName'], $_POST['consignor_ref'], $_POST['address'],$_POST['location'],$_POST['notes'],$_POST['tin_no'],$_POST['contact_name'],$_POST['phone'],$_POST['email'],$_POST['curr_code']);
 
         update_record_status($_POST['consignor_id'], $_POST['inactive'],
             'consignors_master', 'consignor_no');
@@ -102,7 +102,7 @@ function handle_submit(&$selected_id)
 
         begin_transaction();
         add_consignor($_POST['CustName'], $_POST['consignor_ref'], $_POST['address'],
-            $_POST['location'],$_POST['notes'],$_POST['tin_no'],$_POST['contact_name'],$_POST['phone'],$_POST['email']);
+            $_POST['location'],$_POST['notes'],$_POST['tin_no'],$_POST['contact_name'],$_POST['phone'],$_POST['email'],$_POST['curr_code']);
 
         $selected_id = $_POST['consignor_id'] = db_insert_id();
          
@@ -212,7 +212,7 @@ function consignor_settings($consignor_id)
 /*
     text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
     
-
+*/
     if (!$selected_id || is_new_consignor($selected_id)) 
     {
         currencies_list_row(_("Consignor's Currency:"), 'curr_code', $_POST['curr_code']);
@@ -222,8 +222,8 @@ function consignor_settings($consignor_id)
         label_row(_("Consignor's Currency:"), $_POST['curr_code']);
         hidden('curr_code', $_POST['curr_code']);               
     }
-    transport_types_list_row(_("Transport Type:"), 'transport_type', $_POST['transport_type']);
-*/  
+  /*  transport_types_list_row(_("Transport Type:"), 'transport_type', $_POST['transport_type']);
+  */
     form_section_title(_("Details"));
     if($selected_id)
     {
